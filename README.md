@@ -1,2 +1,2 @@
 # CoRAS
-Community Risk Assessment System
+Community Recommender AI-Driven System
