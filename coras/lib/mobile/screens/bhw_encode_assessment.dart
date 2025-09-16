@@ -103,7 +103,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                 title: "1. Personal Information",
                 children: [
                   TextFormField(
-                    controller: _controller.nameController,
+                    controller: AssessmentController.nameController,
                     cursorColor: Color(0xFF2E7D32), // cursor color
                     decoration: InputDecoration(
                       labelText: "Name",
@@ -131,8 +131,8 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value:
-                        _controller.sexController.text.isNotEmpty
-                            ? _controller.sexController.text
+                        AssessmentController.sexController.text.isNotEmpty
+                            ? AssessmentController.sexController.text
                             : null,
                     items: const [
                       DropdownMenuItem(value: 'M', child: Text("Male")),
@@ -140,7 +140,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     ],
                     onChanged: (value) {
                       if (value != null) {
-                        _controller.sexController.text = value;
+                        AssessmentController.sexController.text = value;
                       }
                     },
                     decoration: InputDecoration(
@@ -168,7 +168,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
                   const SizedBox(height: 12),
                   TextFormField(
-                    controller: _controller.birthdateController,
+                    controller: AssessmentController.birthdateController,
                     readOnly: true,
                     cursorColor: Color(0xFF2E7D32), // custom cursor color
                     decoration: InputDecoration(
@@ -202,7 +202,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       );
 
                       if (pickedDate != null) {
-                        _controller.birthdateController.text =
+                        AssessmentController.birthdateController.text =
                             pickedDate.toString().split(' ')[0];
                         _controller.calculateAgeFromBirthdate(pickedDate);
                         setState(() {});
@@ -212,7 +212,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
                   const SizedBox(height: 12),
                   TextFormField(
-                    controller: _controller.ageController,
+                    controller: AssessmentController.ageController,
                     readOnly: true,
                     cursorColor: Color(0xFF2E7D32),
                     decoration: InputDecoration(
@@ -236,8 +236,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
                   DropdownButtonFormField<String>(
                     value:
-                        _controller.civilStatusController.text.isNotEmpty
-                            ? _controller.civilStatusController.text
+                        AssessmentController
+                                .civilStatusController
+                                .text
+                                .isNotEmpty
+                            ? AssessmentController.civilStatusController.text
                             : null,
                     items: const [
                       DropdownMenuItem(value: 'Single', child: Text("Single")),
@@ -256,7 +259,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     ],
                     onChanged: (value) {
                       if (value != null) {
-                        _controller.civilStatusController.text = value;
+                        AssessmentController.civilStatusController.text = value;
                       }
                     },
                     decoration: InputDecoration(
@@ -284,7 +287,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.contactController,
+                    controller: AssessmentController.contactController,
                     cursorColor: Color(0xFF2E7D32),
                     decoration: InputDecoration(
                       labelText: "Contact Number",
@@ -310,7 +313,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.addressController,
+                    controller: AssessmentController.addressController,
                     cursorColor: Color(0xFF2E7D32),
                     decoration: InputDecoration(
                       labelText: "Address",
@@ -441,7 +444,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.heightController,
+                    controller: AssessmentController.heightController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Height (cm)",
@@ -454,10 +457,14 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final height =
-                          double.tryParse(_controller.heightController.text) ??
+                          double.tryParse(
+                            AssessmentController.heightController.text,
+                          ) ??
                           0.0;
                       final weight =
-                          double.tryParse(_controller.weightController.text) ??
+                          double.tryParse(
+                            AssessmentController.weightController.text,
+                          ) ??
                           0.0;
                       _controller.calculateBMI(height, weight);
                       setState(() {});
@@ -466,7 +473,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.weightController,
+                    controller: AssessmentController.weightController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Weight (kg)",
@@ -479,10 +486,14 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final height =
-                          double.tryParse(_controller.heightController.text) ??
+                          double.tryParse(
+                            AssessmentController.heightController.text,
+                          ) ??
                           0.0;
                       final weight =
-                          double.tryParse(_controller.weightController.text) ??
+                          double.tryParse(
+                            AssessmentController.weightController.text,
+                          ) ??
                           0.0;
                       _controller.calculateBMI(height, weight);
                       setState(() {});
@@ -491,7 +502,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.bmiController,
+                    controller: AssessmentController.bmiController,
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: "BMI",
@@ -501,7 +512,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.bmiCategoryController,
+                    controller: AssessmentController.bmiCategoryController,
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: "BMI Category",
@@ -522,7 +533,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.waistController,
+                    controller: AssessmentController.waistController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Waist Circumference (cm)",
@@ -535,10 +546,14 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final waist =
-                          double.tryParse(_controller.waistController.text) ??
+                          double.tryParse(
+                            AssessmentController.waistController.text,
+                          ) ??
                           0.0;
                       final hip =
-                          double.tryParse(_controller.hipController.text) ??
+                          double.tryParse(
+                            AssessmentController.hipController.text,
+                          ) ??
                           0.0;
                       _controller.calculateWaistHipRatio(waist, hip);
                     },
@@ -546,7 +561,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.hipController,
+                    controller: AssessmentController.hipController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Hip Circumference (cm)",
@@ -559,10 +574,14 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final waist =
-                          double.tryParse(_controller.waistController.text) ??
+                          double.tryParse(
+                            AssessmentController.waistController.text,
+                          ) ??
                           0.0;
                       final hip =
-                          double.tryParse(_controller.hipController.text) ??
+                          double.tryParse(
+                            AssessmentController.hipController.text,
+                          ) ??
                           0.0;
                       _controller.calculateWaistHipRatio(waist, hip);
                     },
@@ -570,7 +589,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.ratioController,
+                    controller: AssessmentController.ratioController,
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: "Waist-to-Hip Ratio",
@@ -580,7 +599,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.ratioCategoryController,
+                    controller: AssessmentController.ratioCategoryController,
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: "WHR Category",
@@ -596,7 +615,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 8),
 
                   TextFormField(
-                    controller: _controller.sbp1Controller,
+                    controller: AssessmentController.sbp1Controller,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Systolic BP",
@@ -609,20 +628,32 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final sys1 =
-                          int.tryParse(_controller.sbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp1Controller.text,
+                          ) ??
+                          0;
                       final dia1 =
-                          int.tryParse(_controller.dbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp1Controller.text,
+                          ) ??
+                          0;
                       final sys2 =
-                          int.tryParse(_controller.sbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp2Controller.text,
+                          ) ??
+                          0;
                       final dia2 =
-                          int.tryParse(_controller.dbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp2Controller.text,
+                          ) ??
+                          0;
                       _controller.getBpAvg(sys1, dia1, sys2, dia2);
                     },
                   ),
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.dbp1Controller,
+                    controller: AssessmentController.dbp1Controller,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Diastolic BP",
@@ -635,13 +666,25 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final sys1 =
-                          int.tryParse(_controller.sbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp1Controller.text,
+                          ) ??
+                          0;
                       final dia1 =
-                          int.tryParse(_controller.dbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp1Controller.text,
+                          ) ??
+                          0;
                       final sys2 =
-                          int.tryParse(_controller.sbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp2Controller.text,
+                          ) ??
+                          0;
                       final dia2 =
-                          int.tryParse(_controller.dbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp2Controller.text,
+                          ) ??
+                          0;
                       _controller.getBpAvg(sys1, dia1, sys2, dia2);
                     },
                   ),
@@ -654,7 +697,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 8),
 
                   TextFormField(
-                    controller: _controller.sbp2Controller,
+                    controller: AssessmentController.sbp2Controller,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Systolic BP",
@@ -667,20 +710,32 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final sys1 =
-                          int.tryParse(_controller.sbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp1Controller.text,
+                          ) ??
+                          0;
                       final dia1 =
-                          int.tryParse(_controller.dbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp1Controller.text,
+                          ) ??
+                          0;
                       final sys2 =
-                          int.tryParse(_controller.sbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp2Controller.text,
+                          ) ??
+                          0;
                       final dia2 =
-                          int.tryParse(_controller.dbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp2Controller.text,
+                          ) ??
+                          0;
                       _controller.getBpAvg(sys1, dia1, sys2, dia2);
                     },
                   ),
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.dbp2Controller,
+                    controller: AssessmentController.dbp2Controller,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Diastolic BP",
@@ -693,13 +748,25 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                 : null,
                     onChanged: (_) {
                       final sys1 =
-                          int.tryParse(_controller.sbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp1Controller.text,
+                          ) ??
+                          0;
                       final dia1 =
-                          int.tryParse(_controller.dbp1Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp1Controller.text,
+                          ) ??
+                          0;
                       final sys2 =
-                          int.tryParse(_controller.sbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.sbp2Controller.text,
+                          ) ??
+                          0;
                       final dia2 =
-                          int.tryParse(_controller.dbp2Controller.text) ?? 0;
+                          int.tryParse(
+                            AssessmentController.dbp2Controller.text,
+                          ) ??
+                          0;
                       _controller.getBpAvg(sys1, dia1, sys2, dia2);
                     },
                   ),
@@ -712,7 +779,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 8),
 
                   TextFormField(
-                    controller: _controller.sbpAvgController,
+                    controller: AssessmentController.sbpAvgController,
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: "Average Systolic BP",
@@ -722,7 +789,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.dbpAvgController,
+                    controller: AssessmentController.dbpAvgController,
                     readOnly: true,
                     decoration: const InputDecoration(
                       labelText: "Average Diastolic BP",
@@ -743,12 +810,12 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.bpCategoryController,
+                    controller: AssessmentController.bpCategoryController,
                     readOnly: true,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: getBPCategoryColor(
-                        _controller.bpCategoryController.text,
+                        AssessmentController.bpCategoryController.text,
                       ),
                     ),
                     decoration: const InputDecoration(
@@ -759,7 +826,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.bpMedicineController,
+                    controller: AssessmentController.bpMedicineController,
                     decoration: const InputDecoration(
                       labelText: "Medicine",
                       border: OutlineInputBorder(),
@@ -768,7 +835,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
 
                   TextFormField(
-                    controller: _controller.medMilligramsController,
+                    controller: AssessmentController.medMilligramsController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Milligrams",
@@ -814,7 +881,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     },
                   ),
                   YesNoField(
-                    label: "Had 5 drinks in one occasion (last month)",
+                    label: "In past months, had 5 drinks in one occasion",
                     value: _controller.yesNoAnswers["5 Drinks Occasion"],
                     required: true,
                     onChanged: (val) {
@@ -854,6 +921,31 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     required: true,
                     onChanged: (val) {
                       _controller.yesNoAnswers["Vegetables"] = val;
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  YesNoField(
+                    label: "3 Servings of Fruits Daily",
+                    value: _controller.yesNoAnswers["Fruits"],
+                    required: true,
+                    onChanged: (val) {
+                      _controller.yesNoAnswers["Fruits"] = val;
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "Physical Activity",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  YesNoField(
+                    label:
+                        "Does at least 2 1/2 hours a week of moderate intensity physical activity?",
+                    value: _controller.yesNoAnswers["Physical Activity"],
+                    required: true,
+                    onChanged: (val) {
+                      _controller.yesNoAnswers["Physical Activity"] = val;
                       setState(() {});
                     },
                   ),
@@ -995,8 +1087,13 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value:
-                        _controller.diabetesMedicationController.text.isNotEmpty
-                            ? _controller.diabetesMedicationController.text
+                        AssessmentController
+                                .diabetesMedicationController
+                                .text
+                                .isNotEmpty
+                            ? AssessmentController
+                                .diabetesMedicationController
+                                .text
                             : null,
                     items: const [
                       DropdownMenuItem(
@@ -1010,7 +1107,8 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     ],
                     onChanged: (val) {
                       if (val != null) {
-                        _controller.diabetesMedicationController.text = val;
+                        AssessmentController.diabetesMedicationController.text =
+                            val;
                         setState(() {});
                       }
                     },
@@ -1023,7 +1121,8 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const SizedBox(height: 12),
                   TextFormField(
                     controller:
-                        _controller.diabetesExistingMedicationController,
+                        AssessmentController
+                            .diabetesExistingMedicationController,
                     decoration: const InputDecoration(
                       labelText: "Medicine",
                       border: OutlineInputBorder(),
@@ -1031,7 +1130,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
-                    controller: _controller.diabetesMedMgController,
+                    controller: AssessmentController.diabetesMedMgController,
                     decoration: const InputDecoration(
                       labelText: "Milligrams",
                       border: OutlineInputBorder(),
@@ -1100,7 +1199,90 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {}, // 👈 empty, just UI
+                  onPressed: () async {
+                    final controller = AssessmentController();
+
+                    final patientData = {
+                      "age":
+                          int.tryParse(
+                            AssessmentController.ageController.text,
+                          ) ??
+                          0,
+                      "sex": AssessmentController.sexController.text,
+                      "bmi": AssessmentController.bmiController.text,
+                      "systolic": AssessmentController.sbpAvgController.text,
+                      "diostolic": AssessmentController.dbpAvgController.text,
+                      "smoking": AssessmentController.smokingStatus,
+                      "alcohol":
+                          AssessmentController.drinksAlcoholController.text,
+                      "excessive_alcohol":
+                          AssessmentController.excessiveAlcoholController.text,
+                      "high_fat_salt_food":
+                          AssessmentController.highFatSaltController.text,
+                      "vegetable_intake":
+                          AssessmentController.vegController.text,
+                      "fruit_intake": AssessmentController.fruitController.text,
+                      "physical_activity":
+                          AssessmentController.physicalActivityController.text,
+
+                      "angina_q1": AssessmentController.anginaQuestions,
+                      "angina_q2": AssessmentController.anginaQuestions,
+                      "angina_q3": AssessmentController.anginaQuestions,
+                      "angina_q4": AssessmentController.anginaQuestions,
+                      "angina_q5": AssessmentController.anginaQuestions,
+                      "angina_q6": AssessmentController.anginaQuestions,
+                      "angina_q7": AssessmentController.anginaQuestions,
+                      "stroke_q8": AssessmentController.anginaQuestions,
+
+                      "polyuria": AssessmentController.diabetesSymptoms,
+                      "polyphagia": AssessmentController.diabetesSymptoms,
+                      "polydipsia": AssessmentController.diabetesSymptoms,
+
+                      // add other fields you already collect
+                    };
+
+                    try {
+                      final result = await controller.submitAssessment(
+                        patientData,
+                      );
+
+                      final recommendations =
+                          result["results"]["ai_recommendations"];
+                      final summary = result["summary"];
+
+                      showDialog(
+                        context: context,
+                        builder:
+                            (_) => AlertDialog(
+                              title: Text("AI Health Recommendations"),
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Summary:\n$summary\n",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text("Details:\n$recommendations"),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("Close"),
+                                ),
+                              ],
+                            ),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 20),

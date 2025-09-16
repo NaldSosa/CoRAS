@@ -40,7 +40,7 @@ class _BhwSplashState extends State<BhwSplash> {
             Image(image: AssetImage("assets/images/mhologo.png"), height: 120),
             SizedBox(height: 20),
             Text(
-              "Community Recommender AI Driven System",
+              "Community Recommender AI-Driven System",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

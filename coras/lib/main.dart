@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'mobile/screens/bhw_login.dart';
 import 'mobile/screens/bhw_dashboard.dart';
@@ -10,7 +11,9 @@ import 'web/screens/mho_login.dart';
 import 'web/screens/mho_dashboard.dart';
 import 'web/screens/mho_forgot_password.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
   runApp(const MyApp());
 }
 

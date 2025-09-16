@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AssessmentController {
   // =================== FORM FIELDS ===================
@@ -12,52 +14,52 @@ class AssessmentController {
   TextStyle? textStyle;
 
   // Section 1: Personal Info
-  final nameController =
+  static final nameController =
       TextEditingController(); // controller ng isang text field, pang store ng value ng text field
-  final sexController = TextEditingController();
-  final birthdateController = TextEditingController();
-  final ageController = TextEditingController();
-  final civilStatusController = TextEditingController();
-  final contactController = TextEditingController();
-  final addressController = TextEditingController();
+  static final sexController = TextEditingController();
+  static final birthdateController = TextEditingController();
+  static final ageController = TextEditingController();
+  static final civilStatusController = TextEditingController();
+  static final contactController = TextEditingController();
+  static final addressController = TextEditingController();
 
   // Section 3: Obesity & Blood Pressure
-  final heightController = TextEditingController();
-  final weightController = TextEditingController();
-  final bmiController = TextEditingController();
-  final bmiCategoryController = TextEditingController();
-  final obesityController = TextEditingController();
-  final waistController = TextEditingController();
-  final hipController = TextEditingController();
-  final ratioController = TextEditingController();
-  final ratioCategoryController = TextEditingController();
-  final adiposityController = TextEditingController();
-  final sbp1Controller = TextEditingController();
-  final dbp1Controller = TextEditingController();
-  final sbp2Controller = TextEditingController();
-  final dbp2Controller = TextEditingController();
-  final sbpAvgController = TextEditingController();
-  final dbpAvgController = TextEditingController();
-  final raisedBPController = TextEditingController();
-  final bpCategoryController = TextEditingController();
-  final bpMedicineController = TextEditingController();
-  final medMilligramsController = TextEditingController();
+  static final heightController = TextEditingController();
+  static final weightController = TextEditingController();
+  static final bmiController = TextEditingController();
+  static final bmiCategoryController = TextEditingController();
+  static final obesityController = TextEditingController();
+  static final waistController = TextEditingController();
+  static final hipController = TextEditingController();
+  static final ratioController = TextEditingController();
+  static final ratioCategoryController = TextEditingController();
+  static final adiposityController = TextEditingController();
+  static final sbp1Controller = TextEditingController();
+  static final dbp1Controller = TextEditingController();
+  static final sbp2Controller = TextEditingController();
+  static final dbp2Controller = TextEditingController();
+  static final sbpAvgController = TextEditingController();
+  static final dbpAvgController = TextEditingController();
+  static final raisedBPController = TextEditingController();
+  static final bpCategoryController = TextEditingController();
+  static final bpMedicineController = TextEditingController();
+  static final medMilligramsController = TextEditingController();
 
   // Section 4: Smoking
-  String smokingStatus = '';
+  static String smokingStatus = '';
 
   // Section 5: Alcohol
-  final drinksAlcoholController = TextEditingController();
-  final excessiveAlcoholController = TextEditingController();
+  static final drinksAlcoholController = TextEditingController();
+  static final excessiveAlcoholController = TextEditingController();
 
   // Section 6: Lifestyle
-  final highFatSaltController = TextEditingController();
-  final vegController = TextEditingController();
-  final fruitController = TextEditingController();
-  final physicalActivityController = TextEditingController();
+  static final highFatSaltController = TextEditingController();
+  static final vegController = TextEditingController();
+  static final fruitController = TextEditingController();
+  static final physicalActivityController = TextEditingController();
 
   // Section 7: Questionnaire
-  Map<String, bool?> anginaQuestions = {
+  static Map<String, bool?> anginaQuestions = {
     'Q1. Nakakaramdam ka ba ng pananakit o kabigatan sa iyong dibdib? (If NO, skip to Question 8)':
         null,
     'Q2. Ang sakit ba ay nasa gitna ng dibdib, sa kaliwang bahagi ng dibdib, o sa kaliwang braso? (If NO, skip to Question 8)':
@@ -74,21 +76,39 @@ class AssessmentController {
         null,
   };
 
-  final anginaResultController = TextEditingController();
+  static final anginaResultController = TextEditingController();
 
   // Section 8: Diabetes
-  final diabetesMedicationController = TextEditingController();
-  final diabetesExistingMedicationController = TextEditingController();
-  final diabetesMedMgController = TextEditingController();
+  static final diabetesMedicationController = TextEditingController();
+  static final diabetesExistingMedicationController = TextEditingController();
+  static final diabetesMedMgController = TextEditingController();
 
-  Map<String, bool?> diabetesSymptoms = {
+  static Map<String, bool?> diabetesSymptoms = {
     'Polyphagia (Palaging Gutom)': null,
     'Polydipsia (Palaging Nauuhaw)': null,
     'Polyuria (Palaging Naiihi)': null,
   };
 
   // Section 9: Remarks
-  final remarksController = TextEditingController();
+  static final remarksController = TextEditingController();
+
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: dotenv.env['API_URL']!,
+      headers: {"Content-Type": "application/json"},
+    ),
+  );
+
+  Future<Map<String, dynamic>> submitAssessment(
+    Map<String, dynamic> patientData,
+  ) async {
+    try {
+      final response = await _dio.post("/risk-assessment/", data: patientData);
+      return response.data;
+    } catch (e) {
+      throw Exception("Error submitting assessment: $e");
+    }
+  }
 
   // =================== CALCULATION LOGIC ===================
   void calculateAgeFromBirthdate(DateTime birthdate) {
