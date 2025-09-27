@@ -364,64 +364,64 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   const Text("Does Patient have 1st degree relative with:"),
                   YesNoField(
                     label: "Hypertension",
-                    value: _controller.yesNoAnswers["Hypertension"],
+                    value: AssessmentController.yesNoAnswers["Hypertension"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Hypertension"] = val;
+                      AssessmentController.yesNoAnswers["Hypertension"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Stroke",
-                    value: _controller.yesNoAnswers["Stroke"],
+                    value: AssessmentController.yesNoAnswers["Stroke"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Stroke"] = val;
+                      AssessmentController.yesNoAnswers["Stroke"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Heart Attack",
-                    value: _controller.yesNoAnswers["Heart Attack"],
+                    value: AssessmentController.yesNoAnswers["Heart Attack"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Heart Attack"] = val;
+                      AssessmentController.yesNoAnswers["Heart Attack"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Diabetes",
-                    value: _controller.yesNoAnswers["Diabetes"],
+                    value: AssessmentController.yesNoAnswers["Diabetes"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Diabetes"] = val;
+                      AssessmentController.yesNoAnswers["Diabetes"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Asthma",
-                    value: _controller.yesNoAnswers["Asthma"],
+                    value: AssessmentController.yesNoAnswers["Asthma"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Asthma"] = val;
+                      AssessmentController.yesNoAnswers["Asthma"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Cancer",
-                    value: _controller.yesNoAnswers["Cancer"],
+                    value: AssessmentController.yesNoAnswers["Cancer"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Cancer"] = val;
+                      AssessmentController.yesNoAnswers["Cancer"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Kidney Disease",
-                    value: _controller.yesNoAnswers["Kidney Disease"],
+                    value: AssessmentController.yesNoAnswers["Kidney Disease"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Kidney Disease"] = val;
+                      AssessmentController.yesNoAnswers["Kidney Disease"] = val;
                       setState(() {});
                     },
                   ),
@@ -435,9 +435,9 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   YesNoField(
                     label: "Obesity",
                     readOnly: true,
-                    value: _controller.yesNoAnswers["Obesity"],
+                    value: AssessmentController.yesNoAnswers["Obesity"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Obesity"] = val;
+                      AssessmentController.yesNoAnswers["Obesity"] = val;
                       setState(() {});
                     },
                   ),
@@ -524,9 +524,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   YesNoField(
                     label: "Central Adiposity",
                     readOnly: true,
-                    value: _controller.yesNoAnswers["Central Adiposity"],
+                    value:
+                        AssessmentController.yesNoAnswers["Central Adiposity"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Central Adiposity"] = val;
+                      AssessmentController.yesNoAnswers["Central Adiposity"] =
+                          val;
                       setState(() {});
                     },
                   ),
@@ -801,9 +803,9 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   YesNoField(
                     label: "Raised BP",
                     readOnly: true,
-                    value: _controller.yesNoAnswers["Raised BP"],
+                    value: AssessmentController.yesNoAnswers["Raised BP"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Raised BP"] = val;
+                      AssessmentController.yesNoAnswers["Raised BP"] = val;
                       setState(() {});
                     },
                   ),
@@ -850,7 +852,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                 title: "4. Smoking Status",
                 children: [
                   RadioGroupField(
-                    label: "Smoking Status",
+                    label: "4. Smoking Status",
                     options: [
                       "Never Smoked",
                       "Current Smoker",
@@ -858,9 +860,9 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       "Stopped > 1 year",
                       "Stopped < 1 year",
                     ],
-                    value: _controller.radioAnswers["Smoking Status"],
+                    value: AssessmentController.radioAnswers["Smoking Status"],
                     onChanged: (val) {
-                      _controller.radioAnswers["Smoking Status"] = val!;
+                      AssessmentController.radioAnswers["Smoking Status"] = val;
                       setState(() {});
                     },
                   ),
@@ -873,19 +875,21 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                 children: [
                   YesNoField(
                     label: "Drinks Alcohol",
-                    value: _controller.yesNoAnswers["Drinks Alcohol"],
+                    value: AssessmentController.yesNoAnswers["Drinks Alcohol"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Drinks Alcohol"] = val;
+                      AssessmentController.yesNoAnswers["Drinks Alcohol"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "In past months, had 5 drinks in one occasion",
-                    value: _controller.yesNoAnswers["5 Drinks Occasion"],
+                    value:
+                        AssessmentController.yesNoAnswers["5 Drinks Occasion"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["5 Drinks Occasion"] = val;
+                      AssessmentController.yesNoAnswers["5 Drinks Occasion"] =
+                          val;
                       setState(() {});
                     },
                   ),
@@ -903,10 +907,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   YesNoField(
                     label:
                         "Eats Processed / Fast Foods (e.g Instant Noodles, Hamburgers, Fries, etc.)",
-                    value: _controller.yesNoAnswers["Processed Foods"],
+                    value: AssessmentController.yesNoAnswers["Processed Foods"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Processed Foods"] = val;
+                      AssessmentController.yesNoAnswers["Processed Foods"] =
+                          val;
                       setState(() {});
                     },
                   ),
@@ -917,20 +922,20 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   ),
                   YesNoField(
                     label: "3 Servings of Vegetables Daily",
-                    value: _controller.yesNoAnswers["Vegetables"],
+                    value: AssessmentController.yesNoAnswers["Vegetables"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Vegetables"] = val;
+                      AssessmentController.yesNoAnswers["Vegetables"] = val;
                       setState(() {});
                     },
                   ),
                   const SizedBox(height: 12),
                   YesNoField(
                     label: "3 Servings of Fruits Daily",
-                    value: _controller.yesNoAnswers["Fruits"],
+                    value: AssessmentController.yesNoAnswers["Fruits"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Fruits"] = val;
+                      AssessmentController.yesNoAnswers["Fruits"] = val;
                       setState(() {});
                     },
                   ),
@@ -942,10 +947,12 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   YesNoField(
                     label:
                         "Does at least 2 1/2 hours a week of moderate intensity physical activity?",
-                    value: _controller.yesNoAnswers["Physical Activity"],
+                    value:
+                        AssessmentController.yesNoAnswers["Physical Activity"],
                     required: true,
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Physical Activity"] = val;
+                      AssessmentController.yesNoAnswers["Physical Activity"] =
+                          val;
                       setState(() {});
                     },
                   ),
@@ -965,70 +972,71 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     label:
                         "Q1. Nakakaramdam ka ba ng pananakit o kabigatan sa iyong dibdib? (If NO, skip to Question 8)",
                     required: true,
-                    value: _controller.yesNoAnswers["Q1"],
+                    value: AssessmentController.yesNoAnswers["Q1"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q1"] = val;
+                      AssessmentController.yesNoAnswers["Q1"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label:
                         "Q2. Ang sakit ba ay nasa gitna ng dibdib, sa kaliwang bahagi ng dibdib, o sa kaliwang braso? (If NO, skip to Question 8)",
-                    value: _controller.yesNoAnswers["Q2"],
+                    value: AssessmentController.yesNoAnswers["Q2"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q2"] = val;
+                      AssessmentController.yesNoAnswers["Q2"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label:
                         "Q3. Nararamdaman mo ba ito kung ikaw ay nagmamadali o naglalakad nang mabilis?",
-                    value: _controller.yesNoAnswers["Q3"],
+                    value: AssessmentController.yesNoAnswers["Q3"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q3"] = val;
+                      AssessmentController.yesNoAnswers["Q3"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label:
                         "Q4. Timitigil ka ba sa paglalakad kapag sumakit ang iyong dibdib?",
-                    value: _controller.yesNoAnswers["Q4"],
+                    value: AssessmentController.yesNoAnswers["Q4"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q4"] = val;
+                      AssessmentController.yesNoAnswers["Q4"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label:
                         "Q5. Nawawala ba ang sakit kapag ikaw ay di kumikilos o kapag naglagay ng gamot sa ilalim ng dila?",
-                    value: _controller.yesNoAnswers["Q5"],
+                    value: AssessmentController.yesNoAnswers["Q5"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q5"] = val;
+                      AssessmentController.yesNoAnswers["Q5"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Q6. Nawawala ba ang sakit sa loob ng 10 minuto?",
-                    value: _controller.yesNoAnswers["Q6"],
+                    value: AssessmentController.yesNoAnswers["Q6"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q6"] = val;
+                      AssessmentController.yesNoAnswers["Q6"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label:
                         "Q7. Nakaramdam ka na ba ng pananakit ng dibdib na tumagal ng kalahating oras o higit pa?",
-                    value: _controller.yesNoAnswers["Q7"],
+                    value: AssessmentController.yesNoAnswers["Q7"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q7"] = val;
+                      AssessmentController.yesNoAnswers["Q7"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Possible Angina or Heart Attack",
-                    value: _controller.yesNoAnswers["Possible Angina"],
+                    value: AssessmentController.yesNoAnswers["Possible Angina"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Possible Angina"] = val;
+                      AssessmentController.yesNoAnswers["Possible Angina"] =
+                          val;
                       setState(() {});
                     },
                   ),
@@ -1044,9 +1052,10 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
                   YesNoField(
                     label: "Possible Stroke or Transient Ischemic Attack (TIA)",
-                    value: _controller.yesNoAnswers["Possible Stroke"],
+                    value: AssessmentController.yesNoAnswers["Possible Stroke"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Possible Stroke"] = val;
+                      AssessmentController.yesNoAnswers["Possible Stroke"] =
+                          val;
                       setState(() {});
                     },
                   ),
@@ -1055,9 +1064,9 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     label:
                         "Q8. Nakakaramdam ka na ba ng mga sumusunod:\n- Hirap sa pagsasalita, panghihina ng braso at/o ng binti o pamamanhid sa kalahating bahagi ng katawan?",
                     required: true,
-                    value: _controller.yesNoAnswers["Q8"],
+                    value: AssessmentController.yesNoAnswers["Q8"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Q8"] = val;
+                      AssessmentController.yesNoAnswers["Q8"] = val;
                       setState(() {});
                     },
                   ),
@@ -1077,11 +1086,14 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   RadioGroupField(
                     label: "Diagnosed with Diabetes?",
                     options: ["YES", "NO", "DO NOT KNOW"],
-                    value: _controller.radioAnswers["Diagnosed with Diabetes?"],
+                    value:
+                        AssessmentController
+                            .radioAnswers["Diagnosed with Diabetes?"],
                     onChanged: (val) {
-                      _controller.radioAnswers["Diagnosed with Diabetes?"] =
+                      AssessmentController
+                              .radioAnswers["Diagnosed with Diabetes?"] =
                           val;
-                      setState(() {});
+                      setState(() {}); // para mag-refresh ang UI
                     },
                   ),
                   const SizedBox(height: 12),
@@ -1141,43 +1153,29 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   YesNoField(
                     label: "Polyphagia (Palaging Gutom)",
                     required: true,
-                    value: _controller.yesNoAnswers["Polyphagia"],
+                    value: AssessmentController.yesNoAnswers["Polyphagia"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Polyphagia"] = val;
+                      AssessmentController.yesNoAnswers["Polyphagia"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Polydipsia (Palaging Nauuhaw)",
                     required: true,
-                    value: _controller.yesNoAnswers["Polydipsia"],
+                    value: AssessmentController.yesNoAnswers["Polydipsia"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Polydipsia"] = val;
+                      AssessmentController.yesNoAnswers["Polydipsia"] = val;
                       setState(() {});
                     },
                   ),
                   YesNoField(
                     label: "Polyuria (Palaging Naiihi)",
                     required: true,
-                    value: _controller.yesNoAnswers["Polyuria"],
+                    value: AssessmentController.yesNoAnswers["Polyuria"],
                     onChanged: (val) {
-                      _controller.yesNoAnswers["Polyuria"] = val;
+                      AssessmentController.yesNoAnswers["Polyuria"] = val;
                       setState(() {});
                     },
-                  ),
-                ],
-              ),
-
-              // --- Section 9: Remarks ---
-              _buildSectionCard(
-                title: "9. Remarks",
-                children: [
-                  TextFormField(
-                    maxLines: 3,
-                    decoration: const InputDecoration(
-                      hintText: "Remarks",
-                      border: OutlineInputBorder(),
-                    ),
                   ),
                 ],
               ),
@@ -1201,78 +1199,80 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   ),
                   onPressed: () async {
                     final controller = AssessmentController();
-
-                    final patientData = {
-                      "age":
-                          int.tryParse(
-                            AssessmentController.ageController.text,
-                          ) ??
-                          0,
-                      "sex": AssessmentController.sexController.text,
-                      "bmi": AssessmentController.bmiController.text,
-                      "systolic": AssessmentController.sbpAvgController.text,
-                      "diostolic": AssessmentController.dbpAvgController.text,
-                      "smoking": AssessmentController.smokingStatus,
-                      "alcohol":
-                          AssessmentController.drinksAlcoholController.text,
-                      "excessive_alcohol":
-                          AssessmentController.excessiveAlcoholController.text,
-                      "high_fat_salt_food":
-                          AssessmentController.highFatSaltController.text,
-                      "vegetable_intake":
-                          AssessmentController.vegController.text,
-                      "fruit_intake": AssessmentController.fruitController.text,
-                      "physical_activity":
-                          AssessmentController.physicalActivityController.text,
-
-                      "angina_q1": AssessmentController.anginaQuestions,
-                      "angina_q2": AssessmentController.anginaQuestions,
-                      "angina_q3": AssessmentController.anginaQuestions,
-                      "angina_q4": AssessmentController.anginaQuestions,
-                      "angina_q5": AssessmentController.anginaQuestions,
-                      "angina_q6": AssessmentController.anginaQuestions,
-                      "angina_q7": AssessmentController.anginaQuestions,
-                      "stroke_q8": AssessmentController.anginaQuestions,
-
-                      "polyuria": AssessmentController.diabetesSymptoms,
-                      "polyphagia": AssessmentController.diabetesSymptoms,
-                      "polydipsia": AssessmentController.diabetesSymptoms,
-
-                      // add other fields you already collect
-                    };
+                    final patientData = AssessmentController.toJson();
 
                     try {
+                      // 1. AI Recommendation
                       final result = await controller.submitAssessment(
                         patientData,
                       );
 
-                      final recommendations =
-                          result["results"]["ai_recommendations"];
-                      final summary = result["summary"];
+                      // 2. Risk Assessment
+                      final risk = await controller.fetchRiskAssessment(
+                        patientData,
+                      );
 
+                      // 3. Extract results
+                      final recommendations =
+                          result["ai_recommendations"] ?? "";
+                      final summary = result["summary"] ?? "";
+
+                      // 4. Show Dialog
                       showDialog(
                         context: context,
                         builder:
                             (_) => AlertDialog(
-                              title: Text("AI Health Recommendations"),
+                              title: const Text("AI Health Recommendations"),
                               content: SingleChildScrollView(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Summary:\n$summary\n",
+                                    const Text(
+                                      "Risk Assessment:",
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text("Details:\n$recommendations"),
+                                    Text(
+                                      "${risk["risk_percentage"]}% - ${risk["risk_level"]}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                          int.parse(
+                                            "0xFF${risk["risk_color"].substring(1)}",
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    const Text(
+                                      "AI Recommendations:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      recommendations,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    const Text(
+                                      "Summary:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      summary,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
                                   ],
                                 ),
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text("Close"),
+                                  child: const Text("Close"),
                                 ),
                               ],
                             ),

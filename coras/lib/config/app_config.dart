@@ -1,6 +1,17 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class AppConfig {
-  static const String baseUrl = String.fromEnvironment(
-    "API_URL",
-    defaultValue: "http://localhost:8000",
+  static String get baseUrl => dotenv.env['API_URL'] ?? "";
+}
+
+class ApiClient {
+  static final Dio dio = Dio(
+    BaseOptions(
+      baseUrl: AppConfig.baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      headers: {"Content-Type": "application/json"},
+    ),
   );
 }

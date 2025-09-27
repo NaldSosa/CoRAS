@@ -1,11 +1,26 @@
-import 'package:flutter/material.dart';
+import 'package:coras/config/app_config.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/material.dart';
 
 class AssessmentController {
   // =================== FORM FIELDS ===================
-  Map<String, bool?> yesNoAnswers = {}; // pang store ng yes or no answers
-  Map<String, String?> radioAnswers = {
+  static Map<String, bool?> yesNoAnswers = {
+    'Alcohol Intake': null,
+    'Excessive Alcohol Intake': null,
+    'High Fat Salt Intake': null,
+    'Vegetable Intake': null,
+    'Fruit Intake': null,
+    'Physical Activity': null,
+    'Q1': null,
+    'Q2': null,
+    'Q3': null,
+    'Q4': null,
+    'Q5': null,
+    'Q6': null,
+    'Q7': null,
+    'Q8': null,
+  }; // pang store ng yes or no answers
+  static Map<String, String?> radioAnswers = {
     "Smoking Status": null,
     "Diagnosed with Diabetes?": null,
   };
@@ -45,9 +60,6 @@ class AssessmentController {
   static final bpMedicineController = TextEditingController();
   static final medMilligramsController = TextEditingController();
 
-  // Section 4: Smoking
-  static String smokingStatus = '';
-
   // Section 5: Alcohol
   static final drinksAlcoholController = TextEditingController();
   static final excessiveAlcoholController = TextEditingController();
@@ -79,6 +91,7 @@ class AssessmentController {
   static final anginaResultController = TextEditingController();
 
   // Section 8: Diabetes
+  static final diabetesScreeningController = TextEditingController();
   static final diabetesMedicationController = TextEditingController();
   static final diabetesExistingMedicationController = TextEditingController();
   static final diabetesMedMgController = TextEditingController();
@@ -89,24 +102,108 @@ class AssessmentController {
     'Polyuria (Palaging Naiihi)': null,
   };
 
-  // Section 9: Remarks
-  static final remarksController = TextEditingController();
+  static Map<String, dynamic> toJson() {
+    return {
+      "age": ageController.text,
+      "sex": sexController.text,
+      "bmi": bmiController.text,
+      "whr_ratio": ratioController.text,
+      "whr_category": ratioCategoryController.text,
+      "sbp": sbpAvgController.text, // renamed
+      "dbp": dbpAvgController.text, // renamed
+      "bp_category": bpCategoryController.text,
+      "smoking": radioAnswers["Smoking Status"],
+      "alcohol": (yesNoAnswers["Drinks Alcohol"] ?? false) ? "YES" : "NO",
+      "excessive_alcohol":
+          (yesNoAnswers["5 Drinks Occasion"] ?? false) ? "YES" : "NO",
+      "high_fat_salt":
+          (yesNoAnswers["Processed Foods"] ?? false) ? "YES" : "NO",
+      "vegetable_intake": (yesNoAnswers["Vegetables"] ?? false) ? "YES" : "NO",
+      "fruit_intake": (yesNoAnswers["Fruits"] ?? false) ? "YES" : "NO",
+      "physical_activity":
+          (yesNoAnswers["Physical Activity"] ?? false) ? "YES" : "NO",
 
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: dotenv.env['API_URL']!,
-      headers: {"Content-Type": "application/json"},
-    ),
-  );
+      // Only Q1–Q8
+      "Q1": (yesNoAnswers["Q1"] ?? false) ? "YES" : "NO",
+      "Q2":
+          yesNoAnswers["Q2"] == null
+              ? null
+              : (yesNoAnswers["Q2"] ?? false)
+              ? "YES"
+              : "NO",
+      "Q3":
+          yesNoAnswers["Q3"] == null
+              ? null
+              : (yesNoAnswers["Q3"] ?? false)
+              ? "YES"
+              : "NO",
+      "Q4":
+          yesNoAnswers["Q4"] == null
+              ? null
+              : (yesNoAnswers["Q4"] ?? false)
+              ? "YES"
+              : "NO",
+      "Q5":
+          yesNoAnswers["Q5"] == null
+              ? null
+              : (yesNoAnswers["Q5"] ?? false)
+              ? "YES"
+              : "NO",
+      "Q6":
+          yesNoAnswers["Q6"] == null
+              ? null
+              : (yesNoAnswers["Q6"] ?? false)
+              ? "YES"
+              : "NO",
+      "Q7":
+          yesNoAnswers["Q7"] == null
+              ? null
+              : (yesNoAnswers["Q7"] ?? false)
+              ? "YES"
+              : "NO",
+      "Q8": (yesNoAnswers["Q8"] ?? false) ? "YES" : "NO",
+
+      "diabetes_diagnosed": radioAnswers["Diagnosed with Diabetes?"],
+      "polyuria":
+          (diabetesSymptoms["Polyuria (Palaging Naiihi)"] ?? false)
+              ? "YES"
+              : "NO",
+      "polyphagia":
+          (diabetesSymptoms["Polyphagia (Palaging Gutom)"] ?? false)
+              ? "YES"
+              : "NO",
+      "polydipsia":
+          (diabetesSymptoms["Polydipsia (Palaging Nauuhaw)"] ?? false)
+              ? "YES"
+              : "NO",
+    };
+  }
 
   Future<Map<String, dynamic>> submitAssessment(
     Map<String, dynamic> patientData,
   ) async {
     try {
-      final response = await _dio.post("/risk-assessment/", data: patientData);
+      final response = await ApiClient.dio.post(
+        "/risk-assessment/",
+        data: patientData,
+      );
       return response.data;
     } catch (e) {
       throw Exception("Error submitting assessment: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchRiskAssessment(
+    Map<String, dynamic> patientData,
+  ) async {
+    try {
+      final response = await ApiClient.dio.post(
+        "/api/get-risk/",
+        data: patientData,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception("Failed risk lookup: ${e.response?.data ?? e.message}");
     }
   }
 
@@ -272,7 +369,7 @@ class AssessmentController {
       fruitController,
       physicalActivityController,
       anginaResultController,
-      remarksController,
+      diabetesScreeningController,
       diabetesMedicationController,
       diabetesExistingMedicationController,
       diabetesMedMgController,
