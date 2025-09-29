@@ -1,10 +1,32 @@
 from django.contrib import admin
-from django.apps import apps
+from .models import (
+    CustomUser,
+    Barangay,
+    RuralHealthUnit,
+    ActivityLog,
+    Quota,
+    PatientInformation,
+    Assessment,
+    PatientIntakeRecord,
+    PatientScreening,
+    RiskLevel,
+    RiskChart,
+    Result,
+    Appointment,
+    Configuration,
+)
 
-app = apps.get_app_config('db_models')
-
-for model_name, model in app.models.items():
-    try:
-        admin.site.register(model)
-    except admin.sites.AlreadyRegistered:
-        pass
+admin.site.register(CustomUser)
+admin.site.register(Barangay)
+admin.site.register(RuralHealthUnit)
+admin.site.register(ActivityLog)
+admin.site.register(Quota)
+admin.site.register(PatientInformation)
+admin.site.register(Assessment)
+admin.site.register(PatientIntakeRecord)
+admin.site.register(PatientScreening)
+admin.site.register(RiskLevel)
+admin.site.register(RiskChart)
+admin.site.register(Result)
+admin.site.register(Appointment)
+admin.site.register(Configuration)

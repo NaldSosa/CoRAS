@@ -1,9 +1,40 @@
-// ignore_for_file: deprecated_member_use
-
+import 'package:coras/web/controller/mho_login_controller.dart';
 import 'package:flutter/material.dart';
 
-class MhoLogin extends StatelessWidget {
+class MhoLogin extends StatefulWidget {
   const MhoLogin({super.key});
+
+  @override
+  State<MhoLogin> createState() => _MhoLoginState();
+}
+
+class _MhoLoginState extends State<MhoLogin> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final MhoLoginController loginController = MhoLoginController();
+
+  bool isLoading = false;
+  String? errorMessage;
+
+  void handleLogin() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    final result = await loginController.login(
+      usernameController.text.trim(),
+      passwordController.text.trim(),
+    );
+
+    setState(() => isLoading = false);
+
+    if (result["success"]) {
+      Navigator.pushReplacementNamed(context, "/mhoDashboard");
+    } else {
+      setState(() => errorMessage = result["message"]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +46,11 @@ class MhoLogin extends StatelessWidget {
           Container(color: Colors.black.withOpacity(0.5)),
           Center(
             child: _LoginCard(
-              onLogin: () {
-                Navigator.pushReplacementNamed(context, "/mhoDashboard");
-              },
+              usernameController: usernameController,
+              passwordController: passwordController,
+              onLogin: handleLogin,
+              isLoading: isLoading,
+              errorMessage: errorMessage,
             ),
           ),
         ],
@@ -27,197 +60,164 @@ class MhoLogin extends StatelessWidget {
 }
 
 class _LoginCard extends StatelessWidget {
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
   final VoidCallback onLogin;
-  const _LoginCard({required this.onLogin});
+  final bool isLoading;
+  final String? errorMessage;
+
+  const _LoginCard({
+    required this.usernameController,
+    required this.passwordController,
+    required this.onLogin,
+    required this.isLoading,
+    required this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double width =
-            constraints.maxWidth < 600 ? constraints.maxWidth * 0.75 : 340;
+    double width =
+        MediaQuery.of(context).size.width < 600
+            ? MediaQuery.of(context).size.width * 0.75
+            : 340;
 
-        return Center(
-          child: Stack(
-            clipBehavior: Clip.none,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Container(
+          width: width,
+          padding: const EdgeInsets.fromLTRB(20, 70, 20, 24),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 15,
+                color: Colors.black.withOpacity(0.2),
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Main card
-              Container(
-                width: width,
-                padding: const EdgeInsets.fromLTRB(20, 70, 20, 24),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 15,
-                      color: Colors.black.withOpacity(0.2),
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
+              const Text(
+                "CoRAS",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF388E3C),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10),
-                    const Text(
-                      "CoRAS",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF388E3C),
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      "Log in to your account",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: Colors.black54),
-                    ),
-                    const SizedBox(height: 20),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                "Log in to your account",
+                style: TextStyle(fontSize: 13, color: Colors.black54),
+              ),
+              const SizedBox(height: 20),
 
-                    // Email field
-                    SizedBox(
-                      height: 45,
-                      child: TextField(
-                        style: const TextStyle(fontSize: 13), // smaller font
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.green[50],
-                          hintText: "Email",
-                          hintStyle: const TextStyle(
-                            fontSize: 13,
-                          ), // smaller hint
-                          prefixIcon: const Icon(
-                            Icons.email_outlined,
-                            size: 18, // smaller icon
-                            color: Color(0xFF66BB6A),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                        ),
-                        cursorColor: Colors.green,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
+              // Username
+              TextField(
+                controller: usernameController,
+                decoration: InputDecoration(
+                  hintText: "Username",
+                  prefixIcon: const Icon(
+                    Icons.person_outline,
+                    size: 18,
+                    color: Color(0xFF66BB6A),
+                  ),
+                  filled: true,
+                  fillColor: Colors.green[50],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
 
-                    // Password field
-                    SizedBox(
-                      height: 45,
-                      child: TextField(
-                        obscureText: true,
-                        style: const TextStyle(fontSize: 13), // smaller font
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.green[50],
-                          hintText: "Password",
-                          hintStyle: const TextStyle(
-                            fontSize: 13,
-                          ), // smaller hint
-                          prefixIcon: const Icon(
-                            Icons.lock_outline,
-                            size: 18, // smaller icon
-                            color: Color(0xFF66BB6A),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                        ),
-                        cursorColor: Colors.green,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    // Forgot password with hover + clickable cursor
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: MouseRegion(
-                        cursor:
-                            SystemMouseCursors
-                                .click, // 👈 makes cursor clickable
-                        child: GestureDetector(
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Forgot Password clicked"),
-                              ),
-                            );
-                          },
-                          child: TweenAnimationBuilder<Color?>(
-                            duration: const Duration(milliseconds: 200),
-                            tween: ColorTween(
-                              begin: Colors.green[700],
-                              end: Colors.green[700],
-                            ),
-                            builder: (context, color, child) {
-                              return Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    // Login button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 45,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF43A047),
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: onLogin,
-                        child: const Text(
-                          "LOG IN",
-                          style: TextStyle(
-                            fontSize: 14,
-                            letterSpacing: 1,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+              // Password
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  prefixIcon: const Icon(
+                    Icons.lock_outline,
+                    size: 18,
+                    color: Color(0xFF66BB6A),
+                  ),
+                  filled: true,
+                  fillColor: Colors.green[50],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
 
-              // Logo floating above card
-              Positioned(
-                top: -45,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Image.asset("assets/images/mhologo.png", height: 90),
+              const SizedBox(height: 10),
+
+              // ✅ Forgot Password link
+              Align(
+                alignment: Alignment.centerRight,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/mhoForgotPassword");
+                    },
+                    child: const Text(
+                      "Forgot Password?",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              if (errorMessage != null) ...[
+                const SizedBox(height: 10),
+                Text(errorMessage!, style: const TextStyle(color: Colors.red)),
+              ],
+
+              const SizedBox(height: 20),
+
+              // Login button
+              SizedBox(
+                width: double.infinity,
+                height: 45,
+                child: ElevatedButton(
+                  onPressed: isLoading ? null : onLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF43A047),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child:
+                      isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text("LOG IN"),
                 ),
               ),
             ],
           ),
-        );
-      },
+        ),
+
+        // ✅ Logo floating above card
+        Positioned(
+          top: -45,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Image.asset("assets/images/mhologo.png", height: 90),
+          ),
+        ),
+      ],
     );
   }
 }

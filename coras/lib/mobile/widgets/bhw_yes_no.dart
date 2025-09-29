@@ -37,7 +37,7 @@ class YesNoField extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: hasError ? Colors.red : Colors.black87,
+                  color: hasError ? const Color(0xFFAD2117) : Colors.black87,
                 ),
               ),
               const SizedBox(height: 4),
@@ -48,7 +48,9 @@ class YesNoField extends StatelessWidget {
                       value: true,
                       groupValue: value,
                       activeColor:
-                          hasError ? Colors.red : const Color(0xFF2E7D32),
+                          hasError
+                              ? const Color(0xFFAD2117)
+                              : const Color(0xFF2E7D32),
                       onChanged:
                           readOnly
                               ? null
@@ -59,7 +61,7 @@ class YesNoField extends StatelessWidget {
                       title: Text(
                         "Yes",
                         style: TextStyle(
-                          color: hasError ? Colors.red : Colors.black87,
+                          color: hasError ? Color(0xFFAD2117) : Colors.black87,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -73,7 +75,9 @@ class YesNoField extends StatelessWidget {
                       value: false,
                       groupValue: value,
                       activeColor:
-                          hasError ? Colors.red : const Color(0xFF2E7D32),
+                          hasError
+                              ? Color(0xFFAD2117)
+                              : const Color(0xFF2E7D32),
                       onChanged:
                           readOnly
                               ? null
@@ -84,7 +88,7 @@ class YesNoField extends StatelessWidget {
                       title: Text(
                         "No",
                         style: TextStyle(
-                          color: hasError ? Colors.red : Colors.black87,
+                          color: hasError ? Color(0xFFAD2117) : Colors.black87,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -100,7 +104,10 @@ class YesNoField extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 12.0, top: 4),
                   child: Text(
                     field.errorText!,
-                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                    style: const TextStyle(
+                      color: Color(0xFFAD2117),
+                      fontSize: 12,
+                    ),
                   ),
                 ),
             ],

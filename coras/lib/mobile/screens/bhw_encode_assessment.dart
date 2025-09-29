@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:coras/mobile/controller/bhw_assessment_controller.dart';
+import 'package:hive/hive.dart';
 import '../widgets/bhw_yes_no.dart';
 import '../widgets/bhw_radio_list.dart';
 
@@ -15,6 +16,14 @@ class AssessmentScreen extends StatefulWidget {
 class _AssessmentScreenState extends State<AssessmentScreen> {
   final _controller = AssessmentController();
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    final authBox = Hive.box("authBox");
+    final user = authBox.get("user", defaultValue: {});
+    AssessmentController.barangayController.text = user["location"] ?? "";
+  }
 
   Color getBPCategoryColor(String category) {
     switch (category) {
@@ -62,7 +71,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Assessment"),
+        title: const Text(
+          "Assessment",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
         backgroundColor: const Color(0xFF2E7D32),
       ),
       body: SingleChildScrollView(
@@ -336,8 +349,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 12),
                   TextFormField(
+                    controller: AssessmentController.barangayController,
+                    readOnly: true,
                     cursorColor: Color(0xFF2E7D32),
                     decoration: InputDecoration(
                       labelText: "Barangay",
@@ -432,17 +448,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               _buildSectionCard(
                 title: "3. Anthropometrics & Physiological Risk Factors",
                 children: [
-                  YesNoField(
-                    label: "Obesity",
-                    readOnly: true,
-                    value: AssessmentController.yesNoAnswers["Obesity"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Obesity"] = val;
-                      setState(() {});
-                    },
+                  const Text(
+                    "Obesity",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-
                   TextFormField(
                     controller: AssessmentController.heightController,
                     keyboardType: TextInputType.number,
@@ -520,17 +530,9 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  YesNoField(
-                    label: "Central Adiposity",
-                    readOnly: true,
-                    value:
-                        AssessmentController.yesNoAnswers["Central Adiposity"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Central Adiposity"] =
-                          val;
-                      setState(() {});
-                    },
+                  const Text(
+                    "Central Adiposity",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
 
@@ -798,17 +800,6 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 16),
-
-                  YesNoField(
-                    label: "Raised BP",
-                    readOnly: true,
-                    value: AssessmentController.yesNoAnswers["Raised BP"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Raised BP"] = val;
-                      setState(() {});
-                    },
-                  ),
                   const SizedBox(height: 12),
 
                   TextFormField(
@@ -827,23 +818,39 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  TextFormField(
-                    controller: AssessmentController.bpMedicineController,
-                    decoration: const InputDecoration(
-                      labelText: "Medicine",
-                      border: OutlineInputBorder(),
-                    ),
+                  YesNoField(
+                    label: "Taking Medicine?",
+                    value: AssessmentController.yesNoAnswers["Taking Medicine"],
+                    onChanged: (val) {
+                      AssessmentController.yesNoAnswers["Taking Medicine"] =
+                          val;
+                      setState(() {}); // refresh UI
+                    },
                   ),
                   const SizedBox(height: 12),
 
-                  TextFormField(
-                    controller: AssessmentController.medMilligramsController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: "Milligrams",
-                      border: OutlineInputBorder(),
+                  // Show fields only if user said "Yes"
+                  if (AssessmentController.yesNoAnswers["Taking Medicine"] ==
+                      true) ...[
+                    TextFormField(
+                      controller: AssessmentController.bpMedicineController,
+                      decoration: const InputDecoration(
+                        labelText: "Medicine",
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 12),
+
+                    TextFormField(
+                      controller: AssessmentController.medMilligramsController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: "Milligrams",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                 ],
               ),
 
@@ -865,6 +872,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       AssessmentController.radioAnswers["Smoking Status"] = val;
                       setState(() {});
                     },
+                    validator:
+                        (value) =>
+                            value == null || value.isEmpty
+                                ? "Please select smoking status"
+                                : null,
                   ),
                 ],
               ),
@@ -963,11 +975,10 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               _buildSectionCard(
                 title: "7. Questionnaires",
                 children: [
-                  const Text(
-                    "To Determine Probable Angina, Heart Attack, Stroke, or TIA",
-                  ),
+                  const Text("To Determine Probable Angina or Heart Attack"),
                   const SizedBox(height: 12),
 
+                  // Q1 always visible
                   YesNoField(
                     label:
                         "Q1. Nakakaramdam ka ba ng pananakit o kabigatan sa iyong dibdib? (If NO, skip to Question 8)",
@@ -978,87 +989,73 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       setState(() {});
                     },
                   ),
-                  YesNoField(
-                    label:
-                        "Q2. Ang sakit ba ay nasa gitna ng dibdib, sa kaliwang bahagi ng dibdib, o sa kaliwang braso? (If NO, skip to Question 8)",
-                    value: AssessmentController.yesNoAnswers["Q2"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Q2"] = val;
-                      setState(() {});
-                    },
-                  ),
-                  YesNoField(
-                    label:
-                        "Q3. Nararamdaman mo ba ito kung ikaw ay nagmamadali o naglalakad nang mabilis?",
-                    value: AssessmentController.yesNoAnswers["Q3"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Q3"] = val;
-                      setState(() {});
-                    },
-                  ),
-                  YesNoField(
-                    label:
-                        "Q4. Timitigil ka ba sa paglalakad kapag sumakit ang iyong dibdib?",
-                    value: AssessmentController.yesNoAnswers["Q4"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Q4"] = val;
-                      setState(() {});
-                    },
-                  ),
-                  YesNoField(
-                    label:
-                        "Q5. Nawawala ba ang sakit kapag ikaw ay di kumikilos o kapag naglagay ng gamot sa ilalim ng dila?",
-                    value: AssessmentController.yesNoAnswers["Q5"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Q5"] = val;
-                      setState(() {});
-                    },
-                  ),
-                  YesNoField(
-                    label: "Q6. Nawawala ba ang sakit sa loob ng 10 minuto?",
-                    value: AssessmentController.yesNoAnswers["Q6"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Q6"] = val;
-                      setState(() {});
-                    },
-                  ),
-                  YesNoField(
-                    label:
-                        "Q7. Nakaramdam ka na ba ng pananakit ng dibdib na tumagal ng kalahating oras o higit pa?",
-                    value: AssessmentController.yesNoAnswers["Q7"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Q7"] = val;
-                      setState(() {});
-                    },
-                  ),
-                  YesNoField(
-                    label: "Possible Angina or Heart Attack",
-                    value: AssessmentController.yesNoAnswers["Possible Angina"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Possible Angina"] =
-                          val;
-                      setState(() {});
-                    },
-                  ),
 
-                  const Padding(
-                    padding: EdgeInsets.only(top: 5.0),
-                    child: Text(
-                      "IF the answer to Question 3 or 4 or 5 or 6 or 7 is YES, patient MAY HAVE Angina or Heart Attack and NEEDS TO SEE THE DOCTOR.",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                  // Show Q2 if Q1 == true
+                  if (AssessmentController.yesNoAnswers["Q1"] == true)
+                    YesNoField(
+                      label:
+                          "Q2. Ang sakit ba ay nasa gitna ng dibdib, sa kaliwang bahagi ng dibdib, o sa kaliwang braso? (If NO, skip to Question 8)",
+                      value: AssessmentController.yesNoAnswers["Q2"],
+                      onChanged: (val) {
+                        AssessmentController.yesNoAnswers["Q2"] = val;
+                        setState(() {});
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 16),
 
-                  YesNoField(
-                    label: "Possible Stroke or Transient Ischemic Attack (TIA)",
-                    value: AssessmentController.yesNoAnswers["Possible Stroke"],
-                    onChanged: (val) {
-                      AssessmentController.yesNoAnswers["Possible Stroke"] =
-                          val;
-                      setState(() {});
-                    },
-                  ),
+                  // Show Q3–Q7 if Q2 == true
+                  if (AssessmentController.yesNoAnswers["Q2"] == true) ...[
+                    YesNoField(
+                      label:
+                          "Q3. Nararamdaman mo ba ito kung ikaw ay nagmamadali o naglalakad nang mabilis?",
+                      value: AssessmentController.yesNoAnswers["Q3"],
+                      onChanged: (val) {
+                        AssessmentController.yesNoAnswers["Q3"] = val;
+                        setState(() {});
+                      },
+                    ),
+                    YesNoField(
+                      label:
+                          "Q4. Timitigil ka ba sa paglalakad kapag sumakit ang iyong dibdib?",
+                      value: AssessmentController.yesNoAnswers["Q4"],
+                      onChanged: (val) {
+                        AssessmentController.yesNoAnswers["Q4"] = val;
+                        setState(() {});
+                      },
+                    ),
+                    YesNoField(
+                      label:
+                          "Q5. Nawawala ba ang sakit kapag ikaw ay di kumikilos o kapag naglagay ng gamot sa ilalim ng dila?",
+                      value: AssessmentController.yesNoAnswers["Q5"],
+                      onChanged: (val) {
+                        AssessmentController.yesNoAnswers["Q5"] = val;
+                        setState(() {});
+                      },
+                    ),
+                    YesNoField(
+                      label: "Q6. Nawawala ba ang sakit sa loob ng 10 minuto?",
+                      value: AssessmentController.yesNoAnswers["Q6"],
+                      onChanged: (val) {
+                        AssessmentController.yesNoAnswers["Q6"] = val;
+                        setState(() {});
+                      },
+                    ),
+                    YesNoField(
+                      label:
+                          "Q7. Nakaramdam ka na ba ng pananakit ng dibdib na tumagal ng kalahating oras o higit pa?",
+                      value: AssessmentController.yesNoAnswers["Q7"],
+                      onChanged: (val) {
+                        AssessmentController.yesNoAnswers["Q7"] = val;
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ],
+              ),
+
+              _buildSectionCard(
+                title: "Q8. To Determine Probable Stroke or TIA",
+                children: [
+                  const SizedBox(height: 12),
                   const SizedBox(height: 12),
                   YesNoField(
                     label:
@@ -1071,7 +1068,8 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 11),
+
                   const Text(
                     "IF the answer to Question 8 is YES, patient MAY HAVE Stroke or TIA NEEDS TO SEE THE DOCTOR.",
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -1083,6 +1081,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               _buildSectionCard(
                 title: "8. Diabetes Screening",
                 children: [
+                  // Step 1: Radio field
                   RadioGroupField(
                     label: "Diagnosed with Diabetes?",
                     options: ["YES", "NO", "DO NOT KNOW"],
@@ -1093,63 +1092,100 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       AssessmentController
                               .radioAnswers["Diagnosed with Diabetes?"] =
                           val;
-                      setState(() {}); // para mag-refresh ang UI
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    value:
+
+                      // Reset if not YES
+                      if (val != "YES") {
+                        AssessmentController.diabetesMedicationController
+                            .clear();
                         AssessmentController
-                                .diabetesMedicationController
-                                .text
-                                .isNotEmpty
-                            ? AssessmentController
-                                .diabetesMedicationController
-                                .text
-                            : null,
-                    items: const [
-                      DropdownMenuItem(
-                        value: "With Medication",
-                        child: Text("With Medication"),
-                      ),
-                      DropdownMenuItem(
-                        value: "Without Medication",
-                        child: Text("Without Medication"),
-                      ),
-                    ],
-                    onChanged: (val) {
-                      if (val != null) {
-                        AssessmentController.diabetesMedicationController.text =
-                            val;
-                        setState(() {});
+                            .diabetesExistingMedicationController
+                            .clear();
+                        AssessmentController.diabetesMedMgController.clear();
                       }
+                      setState(() {});
                     },
-                    decoration: const InputDecoration(
-                      labelText: "Medication Type",
-                      border: OutlineInputBorder(),
-                    ),
+                    validator:
+                        (value) =>
+                            value == null || value.isEmpty
+                                ? "Please select an option"
+                                : null,
                   ),
 
                   const SizedBox(height: 12),
-                  TextFormField(
-                    controller:
-                        AssessmentController
-                            .diabetesExistingMedicationController,
-                    decoration: const InputDecoration(
-                      labelText: "Medicine",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: AssessmentController.diabetesMedMgController,
-                    decoration: const InputDecoration(
-                      labelText: "Milligrams",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
 
+                  // Step 2: Dropdown appears only if diagnosed == YES
+                  if (AssessmentController
+                          .radioAnswers["Diagnosed with Diabetes?"] ==
+                      "YES")
+                    DropdownButtonFormField<String>(
+                      value:
+                          AssessmentController
+                                  .diabetesMedicationController
+                                  .text
+                                  .isNotEmpty
+                              ? AssessmentController
+                                  .diabetesMedicationController
+                                  .text
+                              : null,
+                      items: const [
+                        DropdownMenuItem(
+                          value: "With Medication",
+                          child: Text("With Medication"),
+                        ),
+                        DropdownMenuItem(
+                          value: "Without Medication",
+                          child: Text("Without Medication"),
+                        ),
+                      ],
+                      onChanged: (val) {
+                        if (val != null) {
+                          AssessmentController
+                              .diabetesMedicationController
+                              .text = val;
+
+                          // Reset if not "With Medication"
+                          if (val != "With Medication") {
+                            AssessmentController
+                                .diabetesExistingMedicationController
+                                .clear();
+                            AssessmentController.diabetesMedMgController
+                                .clear();
+                          }
+                          setState(() {});
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        labelText: "Medication Type",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                  const SizedBox(height: 12),
+
+                  // Step 3: Medicine + Milligrams appear only if "With Medication"
+                  if (AssessmentController.diabetesMedicationController.text ==
+                      "With Medication") ...[
+                    TextFormField(
+                      controller:
+                          AssessmentController
+                              .diabetesExistingMedicationController,
+                      decoration: const InputDecoration(
+                        labelText: "Medicine",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: AssessmentController.diabetesMedMgController,
+                      decoration: const InputDecoration(
+                        labelText: "Milligrams",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  // Step 4: Always show symptom questions
                   YesNoField(
                     label: "Polyphagia (Palaging Gutom)",
                     required: true,
@@ -1181,110 +1217,169 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               ),
 
               const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save),
-                  label: const Text(
-                    "Save Assessment",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2E7D32),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+              Row(
+                children: [
+                  // Save as Draft (LEFT)
+                  Expanded(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.drafts),
+                        label: const Text(
+                          "Save as Draft",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[700],
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          // No function for now
+                        },
+                      ),
                     ),
                   ),
-                  onPressed: () async {
-                    final controller = AssessmentController();
-                    final patientData = AssessmentController.toJson();
+                  const SizedBox(width: 10), // spacing between buttons
+                  // Save Assessment (RIGHT)
+                  Expanded(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.save),
+                        label: const Text(
+                          "Save Assessment",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2E7D32),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () async {
+                          // ✅ validate form before saving
+                          if (_formKey.currentState!.validate()) {
+                            final controller = AssessmentController();
+                            final patientData = AssessmentController.toJson();
 
-                    try {
-                      // 1. AI Recommendation
-                      final result = await controller.submitAssessment(
-                        patientData,
-                      );
+                            try {
+                              // 1. AI Recommendation
+                              final result = await controller.submitAssessment(
+                                patientData,
+                              );
 
-                      // 2. Risk Assessment
-                      final risk = await controller.fetchRiskAssessment(
-                        patientData,
-                      );
+                              // 2. Risk Assessment
+                              final risk = await controller.fetchRiskAssessment(
+                                patientData,
+                              );
 
-                      // 3. Extract results
-                      final recommendations =
-                          result["ai_recommendations"] ?? "";
-                      final summary = result["summary"] ?? "";
+                              // 3. Extract results
+                              final recommendations =
+                                  result["ai_recommendations"] ?? "";
+                              final summary = result["summary"] ?? "";
 
-                      // 4. Show Dialog
-                      showDialog(
-                        context: context,
-                        builder:
-                            (_) => AlertDialog(
-                              title: const Text("AI Health Recommendations"),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "Risk Assessment:",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                              // 4. Show Dialog
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (_) => AlertDialog(
+                                      title: const Text(
+                                        "AI Health Recommendations",
                                       ),
-                                    ),
-                                    Text(
-                                      "${risk["risk_percentage"]}% - ${risk["risk_level"]}",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(
-                                          int.parse(
-                                            "0xFF${risk["risk_color"].substring(1)}",
-                                          ),
+                                      content: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Risk Assessment:",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${risk["risk_percentage"]}% - ${risk["risk_level"]}",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(
+                                                  int.parse(
+                                                    "0xFF${risk["risk_color"].substring(1)}",
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            const Text(
+                                              "AI Recommendations:",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              recommendations,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            const Text(
+                                              "Summary:",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              summary,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: const Text("Close"),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 16),
-                                    const Text(
-                                      "AI Recommendations:",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      recommendations,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    const Text(
-                                      "Summary:",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      summary,
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ],
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Error: $e")),
+                              );
+                            }
+                          } else {
+                            // ❌ show feedback if validation fails
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "Please fill in all required fields",
                                 ),
                               ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text("Close"),
-                                ),
-                              ],
-                            ),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text("Error: $e")));
-                    }
-                  },
-                ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 20),
             ],
           ),

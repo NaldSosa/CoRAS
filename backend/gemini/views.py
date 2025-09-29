@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .services.gemini import analyze_patient, run_risk_assessment
+from .gemini import analyze_patient, run_risk_assessment
 
 @csrf_exempt
 def risk_assessment_view(request):
@@ -24,5 +24,4 @@ def risk_assessment_view(request):
         })
 
     return JsonResponse({"error": "Only POST method is allowed"}, status=405)
-
 

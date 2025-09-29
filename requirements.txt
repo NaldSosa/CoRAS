@@ -5,3 +5,4 @@ psycopg2-binary
 django-cors-headers
 python-decouple
 google-generativeai
+django-cors-headers

@@ -31,7 +31,7 @@ def categorize_sbp(sbp):
 
 def categorize_smoker_status(smoker_status: str) -> str:
     if not smoker_status:
-        return "Smoker"  # fallback
+        return "Smoker"
 
     normalized = smoker_status.strip().lower()
 

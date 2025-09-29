@@ -1,5 +1,8 @@
 import 'package:coras/mobile/screens/bhw_encode_assessment.dart';
+import 'package:coras/mobile/screens/bhw_profile.dart';
+import 'package:coras/mobile/screens/bhw_login.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -7,7 +10,7 @@ class Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white, // rest of sidebar white
+      backgroundColor: Colors.white,
       child: Column(
         children: [
           // 🔹 Header with Logo + App Name
@@ -16,12 +19,7 @@ class Sidebar extends StatelessWidget {
             padding: const EdgeInsets.all(22),
             child: Row(
               children: [
-                // replace with your logo
-                Image.asset(
-                  "assets/images/mhologo.png", // <-- put your logo in assets
-                  height: 40,
-                  width: 40,
-                ),
+                Image.asset("assets/images/mhologo.png", height: 40, width: 40),
                 const SizedBox(width: 12),
                 const Text(
                   "CoRAS",
@@ -87,20 +85,37 @@ class Sidebar extends StatelessWidget {
           fontWeight: isLogout ? FontWeight.bold : FontWeight.normal,
         ),
       ),
-      onTap: () {
-        Navigator.pop(context); // close sidebar first
+      onTap: () async {
+        Navigator.pop(context); // close sidebar
 
-        if (title == "Encode Assessment") {
+        if (title == "Profile") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const BhwProfile()),
+          );
+        } else if (title == "Encode Assessment") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const AssessmentScreen()),
           );
         } else if (isLogout) {
-          ScaffoldMessenger.of(
+          // ✅ clear in-memory tokens (but keep Hive user info for offline login)
+          final authBox = Hive.box("authBox");
+          authBox.delete("accessToken");
+          authBox.delete("refreshToken");
+
+          // show message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Logged out successfully")),
+          );
+
+          // navigate back to login screen
+          Navigator.pushAndRemoveUntil(
             context,
-          ).showSnackBar(const SnackBar(content: Text("Logged out")));
+            MaterialPageRoute(builder: (_) => const BhwLogin()),
+            (route) => false,
+          );
         }
-        // you can add more menu actions here...
       },
     );
   }

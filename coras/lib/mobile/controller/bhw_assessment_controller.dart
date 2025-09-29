@@ -1,10 +1,15 @@
 import 'package:coras/config/app_config.dart';
-import 'package:dio/dio.dart';
+// import 'package:coras/mobile/services/assessment_model.dart';
+// import 'package:coras/mobile/services/assessment_service.dart';
+// import 'package:coras/mobile/services/network_service.dart';
 import 'package:flutter/material.dart';
+// import 'package:hive/hive.dart';
+// import 'package:uuid/uuid.dart';
 
 class AssessmentController {
   // =================== FORM FIELDS ===================
   static Map<String, bool?> yesNoAnswers = {
+    'Taking Medicine': null,
     'Alcohol Intake': null,
     'Excessive Alcohol Intake': null,
     'High Fat Salt Intake': null,
@@ -19,6 +24,9 @@ class AssessmentController {
     'Q6': null,
     'Q7': null,
     'Q8': null,
+    'Polyphagia (Palaging Gutom)': null,
+    'Polydipsia (Palaging Nauuhaw)': null,
+    'Polyuria (Palaging Naiihi)': null,
   }; // pang store ng yes or no answers
   static Map<String, String?> radioAnswers = {
     "Smoking Status": null,
@@ -37,26 +45,25 @@ class AssessmentController {
   static final civilStatusController = TextEditingController();
   static final contactController = TextEditingController();
   static final addressController = TextEditingController();
+  static final barangayController = TextEditingController();
 
   // Section 3: Obesity & Blood Pressure
   static final heightController = TextEditingController();
   static final weightController = TextEditingController();
   static final bmiController = TextEditingController();
   static final bmiCategoryController = TextEditingController();
-  static final obesityController = TextEditingController();
   static final waistController = TextEditingController();
   static final hipController = TextEditingController();
   static final ratioController = TextEditingController();
   static final ratioCategoryController = TextEditingController();
-  static final adiposityController = TextEditingController();
   static final sbp1Controller = TextEditingController();
   static final dbp1Controller = TextEditingController();
   static final sbp2Controller = TextEditingController();
   static final dbp2Controller = TextEditingController();
   static final sbpAvgController = TextEditingController();
   static final dbpAvgController = TextEditingController();
-  static final raisedBPController = TextEditingController();
   static final bpCategoryController = TextEditingController();
+  static final takingMedicineController = TextEditingController();
   static final bpMedicineController = TextEditingController();
   static final medMilligramsController = TextEditingController();
 
@@ -96,12 +103,6 @@ class AssessmentController {
   static final diabetesExistingMedicationController = TextEditingController();
   static final diabetesMedMgController = TextEditingController();
 
-  static Map<String, bool?> diabetesSymptoms = {
-    'Polyphagia (Palaging Gutom)': null,
-    'Polydipsia (Palaging Nauuhaw)': null,
-    'Polyuria (Palaging Naiihi)': null,
-  };
-
   static Map<String, dynamic> toJson() {
     return {
       "age": ageController.text,
@@ -109,8 +110,8 @@ class AssessmentController {
       "bmi": bmiController.text,
       "whr_ratio": ratioController.text,
       "whr_category": ratioCategoryController.text,
-      "sbp": sbpAvgController.text, // renamed
-      "dbp": dbpAvgController.text, // renamed
+      "sbp": sbpAvgController.text,
+      "dbp": dbpAvgController.text,
       "bp_category": bpCategoryController.text,
       "smoking": radioAnswers["Smoking Status"],
       "alcohol": (yesNoAnswers["Drinks Alcohol"] ?? false) ? "YES" : "NO",
@@ -164,18 +165,9 @@ class AssessmentController {
       "Q8": (yesNoAnswers["Q8"] ?? false) ? "YES" : "NO",
 
       "diabetes_diagnosed": radioAnswers["Diagnosed with Diabetes?"],
-      "polyuria":
-          (diabetesSymptoms["Polyuria (Palaging Naiihi)"] ?? false)
-              ? "YES"
-              : "NO",
-      "polyphagia":
-          (diabetesSymptoms["Polyphagia (Palaging Gutom)"] ?? false)
-              ? "YES"
-              : "NO",
-      "polydipsia":
-          (diabetesSymptoms["Polydipsia (Palaging Nauuhaw)"] ?? false)
-              ? "YES"
-              : "NO",
+      "polyuria": (yesNoAnswers["Polyuria"] ?? false) ? "YES" : "NO",
+      "polyphagia": (yesNoAnswers["Polyphagia"] ?? false) ? "YES" : "NO",
+      "polydipsia": (yesNoAnswers["Polydipsia"] ?? false) ? "YES" : "NO",
     };
   }
 
@@ -198,12 +190,12 @@ class AssessmentController {
   ) async {
     try {
       final response = await ApiClient.dio.post(
-        "/api/get-risk/",
+        "/risk-chart/get-risk/",
         data: patientData,
       );
       return response.data;
-    } on DioException catch (e) {
-      throw Exception("Failed risk lookup: ${e.response?.data ?? e.message}");
+    } catch (e) {
+      throw Exception("Failed risk lookup: $e");
     }
   }
 
@@ -225,18 +217,10 @@ class AssessmentController {
   }
 
   void calculateBMI(double heightCm, double weightKg) {
-    if (heightCm <= 0 || weightKg <= 0) {
-      bmiController.text = '';
-      bmiCategoryController.text = '';
-      yesNoAnswers["Obesity"] = null;
-      return;
-    }
     final bmi = (weightKg / heightCm / heightCm) * 10000;
     bmiController.text = bmi.toStringAsFixed(1);
     final category = getBMICategory(bmi);
     bmiCategoryController.text = category;
-    obesityController.text = (bmi >= 23) ? 'Yes' : 'No';
-    yesNoAnswers["Obesity"] = (bmi >= 23);
   }
 
   String getBMICategory(double bmi) {
@@ -247,23 +231,10 @@ class AssessmentController {
   }
 
   void calculateWaistHipRatio(double waistCm, double hipCm) {
-    if (waistCm <= 0 || hipCm <= 0) {
-      ratioController.text = '';
-      ratioCategoryController.text = '';
-      adiposityController.text = '';
-      yesNoAnswers["Central Adiposity"] = null;
-      return;
-    }
     final ratio = waistCm / hipCm;
-    final sex = sexController.text.trim().toUpperCase();
     ratioController.text = ratio.toStringAsFixed(2);
     final category = getWaistHipRiskLevel(waistCm, hipCm);
     ratioCategoryController.text = category;
-    if ((sex == 'M' && ratio > 0.95) || (sex == 'F' && ratio > 0.85)) {
-      yesNoAnswers["Central Adiposity"] = true;
-    } else {
-      yesNoAnswers["Central Adiposity"] = false;
-    }
   }
 
   String getWaistHipRiskLevel(double waistCm, double hipCm) {
@@ -285,28 +256,12 @@ class AssessmentController {
   }
 
   void getBpAvg(int sys1, int dia1, int sys2, int dia2) {
-    if (sys1 <= 0 || dia1 <= 0 || sys2 <= 0 || dia2 <= 0) {
-      sbpAvgController.text = '';
-      dbpAvgController.text = '';
-      bpCategoryController.text = '';
-      raisedBPController.text = '';
-      yesNoAnswers["Raised BP"] = null;
-      return;
-    }
     int avgSys = (sys1 + sys2) ~/ 2;
     int avgDia = (dia1 + dia2) ~/ 2;
     sbpAvgController.text = '$avgSys';
     dbpAvgController.text = '$avgDia';
     final category = getBPCategory(avgSys, avgDia);
     bpCategoryController.text = category;
-    if (category.startsWith("High Blood Pressure") ||
-        category == "Hypertensive Crisis") {
-      raisedBPController.text = 'Yes';
-      yesNoAnswers["Raised BP"] = true;
-    } else {
-      raisedBPController.text = 'No';
-      yesNoAnswers["Raised BP"] = false;
-    }
   }
 
   String getBPCategory(int sys, int dia) {
@@ -332,7 +287,8 @@ class AssessmentController {
         ageController.text.isNotEmpty &&
         civilStatusController.text.isNotEmpty &&
         contactController.text.isNotEmpty &&
-        addressController.text.isNotEmpty;
+        addressController.text.isNotEmpty &&
+        barangayController.text.isNotEmpty;
   }
 
   void dispose() {
@@ -344,22 +300,21 @@ class AssessmentController {
       civilStatusController,
       contactController,
       addressController,
+      barangayController,
       heightController,
       weightController,
       bmiController,
       bmiCategoryController,
-      obesityController,
       waistController,
       ratioController,
-      adiposityController,
       sbp1Controller,
       dbp1Controller,
       sbp2Controller,
       dbp2Controller,
       sbpAvgController,
       dbpAvgController,
-      raisedBPController,
       bpCategoryController,
+      takingMedicineController,
       bpMedicineController,
       medMilligramsController,
       drinksAlcoholController,

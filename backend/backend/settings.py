@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from decouple import config
 
@@ -28,7 +29,7 @@ SECRET_KEY = 'django-insecure-4gr%ou-l%ajjqe-ji#p6wqca-_yktte73315pev^&hgjr$1%(e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.12', '127.0.0.1', '192.168.1.11']
+ALLOWED_HOSTS = ['192.168.1.12', '127.0.0.1', '192.168.1.11', '192.168.1.7', '10.242.212.143']
 
 
 # Application definition
@@ -43,26 +44,41 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     'db_models.apps.DbModelsConfig',
     'gemini',
     'risk_chart',
+    'accounts',
+    'user_management',
+    'assessments',
 ]
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -98,7 +114,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'db_models.CustomUser'
+AUTH_USER_MODEL = "db_models.CustomUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
