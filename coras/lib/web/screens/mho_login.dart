@@ -116,7 +116,6 @@ class _LoginCard extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Username
               TextField(
                 controller: usernameController,
                 decoration: InputDecoration(
@@ -136,7 +135,6 @@ class _LoginCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Password
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -158,7 +156,6 @@ class _LoginCard extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              // ✅ Forgot Password link
               Align(
                 alignment: Alignment.centerRight,
                 child: MouseRegion(
@@ -186,7 +183,6 @@ class _LoginCard extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Login button
               SizedBox(
                 width: double.infinity,
                 height: 45,
@@ -208,7 +204,6 @@ class _LoginCard extends StatelessWidget {
           ),
         ),
 
-        // ✅ Logo floating above card
         Positioned(
           top: -45,
           left: 0,

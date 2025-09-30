@@ -57,7 +57,6 @@ class Quota(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
-# ✅ Patients
 class PatientInformation(models.Model):
     name = models.CharField(max_length=100)
     birthdate = models.DateField()
@@ -104,12 +103,10 @@ class PatientIntakeRecord(models.Model):
     weight = models.IntegerField()
     bmi = models.FloatField()
     bmi_category = models.CharField(max_length=50)
-    obesity = models.BooleanField()
     waist_circumference = models.IntegerField()
     hip_circumference = models.IntegerField()
     whr_ratio = models.FloatField()
     whr_category = models.CharField(max_length=50)
-    central_adiposity = models.BooleanField()
     first_sbp = models.IntegerField()
     first_dbp = models.IntegerField()
     second_sbp = models.IntegerField()
@@ -117,7 +114,6 @@ class PatientIntakeRecord(models.Model):
     avg_sbp = models.IntegerField()
     avg_dbp = models.IntegerField()
     bp_category = models.CharField(max_length=50)
-    raised_bp = models.BooleanField()
     existing_medication = models.CharField(max_length=100, blank=True, null=True)
     medicine_mg = models.IntegerField(blank=True, null=True)
     smoking_status = models.CharField(max_length=50)
@@ -139,9 +135,7 @@ class PatientScreening(models.Model):
     question_five = models.BooleanField(blank=True, null=True)
     question_six = models.BooleanField(blank=True, null=True)
     question_seven = models.BooleanField(blank=True, null=True)
-    possible_angina_heart_attack = models.BooleanField()
     question_eight = models.BooleanField()
-    possible_stroke_tia = models.BooleanField()
     is_diagnosed_diabetes = models.CharField(max_length=50)
     with_without_medication = models.CharField(max_length=50, blank=True, null=True)
     existing_diabetes_medicines = models.CharField(max_length=100, blank=True, null=True)

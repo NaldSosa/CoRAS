@@ -24,7 +24,6 @@ class _BhwLoginState extends State<BhwLogin> {
   @override
   void initState() {
     super.initState();
-    // ✅ listen to network changes
     networkService.status.listen((status) {
       setState(() => isOnline = status);
     });
@@ -40,13 +39,11 @@ class _BhwLoginState extends State<BhwLogin> {
 
     try {
       if (isOnline) {
-        // ✅ Try online login (API)
         result = await loginController.loginOnline(
           usernameController.text.trim(),
           passwordController.text.trim(),
         );
       } else {
-        // ✅ Fallback offline login (Hive)
         result = await loginController.loginOffline(
           usernameController.text.trim(),
           passwordController.text.trim(),
@@ -151,7 +148,6 @@ class _LoginCard extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // Username
               TextField(
                 controller: usernameController,
                 cursorColor: Color.fromARGB(255, 105, 105, 105),
@@ -177,7 +173,6 @@ class _LoginCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // Password
               TextField(
                 controller: passwordController,
                 cursorColor: Color.fromARGB(255, 105, 105, 105),
@@ -205,7 +200,6 @@ class _LoginCard extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              // ✅ Forgot Password link
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
@@ -230,7 +224,6 @@ class _LoginCard extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Login button
               SizedBox(
                 width: double.infinity,
                 height: 45,
@@ -258,7 +251,6 @@ class _LoginCard extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              // ✅ Show network status for debugging
               Text(
                 isOnline ? "Online mode" : "Offline mode",
                 style: TextStyle(
@@ -270,7 +262,6 @@ class _LoginCard extends StatelessWidget {
           ),
         ),
 
-        // ✅ Logo floating above card
         Positioned(
           top: -45,
           left: 0,

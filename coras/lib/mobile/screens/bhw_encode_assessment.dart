@@ -117,7 +117,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                 children: [
                   TextFormField(
                     controller: AssessmentController.nameController,
-                    cursorColor: Color(0xFF2E7D32), // cursor color
+                    cursorColor: Color(0xFF2E7D32),
                     decoration: InputDecoration(
                       labelText: "Name",
                       border: OutlineInputBorder(),
@@ -183,7 +183,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   TextFormField(
                     controller: AssessmentController.birthdateController,
                     readOnly: true,
-                    cursorColor: Color(0xFF2E7D32), // custom cursor color
+                    cursorColor: Color(0xFF2E7D32),
                     decoration: InputDecoration(
                       labelText: "Birthdate",
                       border: const OutlineInputBorder(),
@@ -824,12 +824,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     onChanged: (val) {
                       AssessmentController.yesNoAnswers["Taking Medicine"] =
                           val;
-                      setState(() {}); // refresh UI
+                      setState(() {});
                     },
                   ),
                   const SizedBox(height: 12),
 
-                  // Show fields only if user said "Yes"
                   if (AssessmentController.yesNoAnswers["Taking Medicine"] ==
                       true) ...[
                     TextFormField(
@@ -1081,7 +1080,6 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               _buildSectionCard(
                 title: "8. Diabetes Screening",
                 children: [
-                  // Step 1: Radio field
                   RadioGroupField(
                     label: "Diagnosed with Diabetes?",
                     options: ["YES", "NO", "DO NOT KNOW"],
@@ -1113,7 +1111,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
                   const SizedBox(height: 12),
 
-                  // Step 2: Dropdown appears only if diagnosed == YES
+                  //Dropdown appears only if diagnosed == YES
                   if (AssessmentController
                           .radioAnswers["Diagnosed with Diabetes?"] ==
                       "YES")
@@ -1143,7 +1141,6 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                               .diabetesMedicationController
                               .text = val;
 
-                          // Reset if not "With Medication"
                           if (val != "With Medication") {
                             AssessmentController
                                 .diabetesExistingMedicationController
@@ -1162,7 +1159,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
                   const SizedBox(height: 12),
 
-                  // Step 3: Medicine + Milligrams appear only if "With Medication"
+                  //Medicine + Milligrams appear only if "With Medication"
                   if (AssessmentController.diabetesMedicationController.text ==
                       "With Medication") ...[
                     TextFormField(
@@ -1185,7 +1182,6 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                     const SizedBox(height: 16),
                   ],
 
-                  // Step 4: Always show symptom questions
                   YesNoField(
                     label: "Polyphagia (Palaging Gutom)",
                     required: true,
@@ -1219,7 +1215,6 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               const SizedBox(height: 24),
               Row(
                 children: [
-                  // Save as Draft (LEFT)
                   Expanded(
                     child: SizedBox(
                       width: double.infinity,
@@ -1246,8 +1241,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10), // spacing between buttons
-                  // Save Assessment (RIGHT)
+                  const SizedBox(width: 10),
                   Expanded(
                     child: SizedBox(
                       width: double.infinity,
@@ -1269,34 +1263,26 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          // ✅ validate form before saving
                           if (_formKey.currentState!.validate()) {
                             final controller = AssessmentController();
-                            final patientData = AssessmentController.toJson();
+                            final payload =
+                                await AssessmentController.toSaveJson();
 
                             try {
-                              // 1. AI Recommendation
-                              final result = await controller.submitAssessment(
-                                patientData,
+                              final save = await controller.createAssessment(
+                                payload,
                               );
 
-                              // 2. Risk Assessment
-                              final risk = await controller.fetchRiskAssessment(
-                                patientData,
-                              );
+                              final risk = save["risk"] ?? "Unknown";
+                              final recommendation =
+                                  save["recommendation"] ?? "";
 
-                              // 3. Extract results
-                              final recommendations =
-                                  result["ai_recommendations"] ?? "";
-                              final summary = result["summary"] ?? "";
-
-                              // 4. Show Dialog
                               showDialog(
                                 context: context,
                                 builder:
                                     (_) => AlertDialog(
                                       title: const Text(
-                                        "AI Health Recommendations",
+                                        "Health Assessment Saved",
                                       ),
                                       content: SingleChildScrollView(
                                         child: Column(
@@ -1310,7 +1296,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                               ),
                                             ),
                                             Text(
-                                              "${risk["risk_percentage"]}% - ${risk["risk_level"]}",
+                                              "${risk["risk_percentage"]}% - ${risk["risk_label"]}",
                                               style: TextStyle(
                                                 fontSize: 14,
                                                 color: Color(
@@ -1322,26 +1308,13 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                                             ),
                                             const SizedBox(height: 16),
                                             const Text(
-                                              "AI Recommendations:",
+                                              "AI Recommendation:",
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             Text(
-                                              recommendations,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            const Text(
-                                              "Summary:",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Text(
-                                              summary,
+                                              recommendation,
                                               style: const TextStyle(
                                                 fontSize: 14,
                                               ),
@@ -1364,7 +1337,6 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                               );
                             }
                           } else {
-                            // ❌ show feedback if validation fails
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(

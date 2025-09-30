@@ -1,6 +1,7 @@
 import 'package:coras/mobile/screens/bhw_encode_assessment.dart';
 import 'package:coras/mobile/screens/bhw_profile.dart';
 import 'package:coras/mobile/screens/bhw_login.dart';
+import 'package:coras/mobile/screens/bhw_view_assessments.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -13,7 +14,6 @@ class Sidebar extends StatelessWidget {
       backgroundColor: Colors.white,
       child: Column(
         children: [
-          // 🔹 Header with Logo + App Name
           Container(
             color: const Color(0xFF388E3C),
             padding: const EdgeInsets.all(22),
@@ -38,7 +38,6 @@ class Sidebar extends StatelessWidget {
             ),
           ),
 
-          // 🔹 Navigation Section
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -86,7 +85,7 @@ class Sidebar extends StatelessWidget {
         ),
       ),
       onTap: () async {
-        Navigator.pop(context); // close sidebar
+        Navigator.pop(context);
 
         if (title == "Profile") {
           Navigator.push(
@@ -98,18 +97,20 @@ class Sidebar extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (_) => const AssessmentScreen()),
           );
+        } else if (title == "View Encoded Assessments") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const PatientListScreen()),
+          );
         } else if (isLogout) {
-          // ✅ clear in-memory tokens (but keep Hive user info for offline login)
           final authBox = Hive.box("authBox");
           authBox.delete("accessToken");
           authBox.delete("refreshToken");
 
-          // show message
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Logged out successfully")),
           );
 
-          // navigate back to login screen
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const BhwLogin()),

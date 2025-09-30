@@ -36,7 +36,6 @@ class _UserManagementState extends State<UserManagement> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tabs
           const SizedBox(height: 8),
           TabBar(
             isScrollable: true,
@@ -53,11 +52,9 @@ class _UserManagementState extends State<UserManagement> {
 
           const SizedBox(height: 12),
 
-          // Tab content
           Expanded(
             child: TabBarView(
               children: [
-                // ---------------- USERS TAB ----------------
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
@@ -89,7 +86,6 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 16),
 
-                      // 🔍 Search + Filters Row
                       Row(
                         children: [
                           Expanded(
@@ -132,7 +128,6 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 12),
 
-                      // ➕ Add User button (Right aligned)
                       Align(
                         alignment: Alignment.centerRight,
                         child: ElevatedButton.icon(
@@ -165,7 +160,6 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 16),
 
-                      // 🔼 Pagination (above table)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -220,7 +214,6 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 12),
 
-                      // 📋 Table
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
@@ -229,7 +222,6 @@ class _UserManagementState extends State<UserManagement> {
                           ),
                           child: Column(
                             children: [
-                              // Table Header
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 10,
@@ -252,7 +244,6 @@ class _UserManagementState extends State<UserManagement> {
                                 ),
                               ),
 
-                              // Table Rows
                               Expanded(
                                 child: ListView.separated(
                                   itemCount: _users.length,
@@ -329,7 +320,6 @@ class _UserManagementState extends State<UserManagement> {
                   ),
                 ),
 
-                // ---------------- PERMISSIONS TAB ----------------
                 const Center(child: Text("Manage User Permissions")),
               ],
             ),
@@ -442,7 +432,6 @@ class _UserManagementState extends State<UserManagement> {
   }
 }
 
-// Table Header Widget (center aligned)
 class _TableHeader extends StatelessWidget {
   final String label;
   final int flex;

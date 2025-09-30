@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import AssessmentCreateView, AssessmentBulkSyncView
+from .views import create_assessment
 
 urlpatterns = [
-    path("assessments/", AssessmentCreateView.as_view(), name="create-assessment"),
-    path("assessments/bulk-sync/", AssessmentBulkSyncView.as_view(), name="bulk-sync"),
+    path("create/", create_assessment, name="create_assessment"),
 ]
+

@@ -1,13 +1,9 @@
 import 'package:coras/config/app_config.dart';
-// import 'package:coras/mobile/services/assessment_model.dart';
-// import 'package:coras/mobile/services/assessment_service.dart';
-// import 'package:coras/mobile/services/network_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:hive/hive.dart';
-// import 'package:uuid/uuid.dart';
+import 'package:hive/hive.dart';
 
 class AssessmentController {
-  // =================== FORM FIELDS ===================
   static Map<String, bool?> yesNoAnswers = {
     'Taking Medicine': null,
     'Alcohol Intake': null,
@@ -27,7 +23,7 @@ class AssessmentController {
     'Polyphagia (Palaging Gutom)': null,
     'Polydipsia (Palaging Nauuhaw)': null,
     'Polyuria (Palaging Naiihi)': null,
-  }; // pang store ng yes or no answers
+  };
   static Map<String, String?> radioAnswers = {
     "Smoking Status": null,
     "Diagnosed with Diabetes?": null,
@@ -36,9 +32,7 @@ class AssessmentController {
   Map<String, String?> textAnswers = {};
   TextStyle? textStyle;
 
-  // Section 1: Personal Info
-  static final nameController =
-      TextEditingController(); // controller ng isang text field, pang store ng value ng text field
+  static final nameController = TextEditingController();
   static final sexController = TextEditingController();
   static final birthdateController = TextEditingController();
   static final ageController = TextEditingController();
@@ -47,7 +41,6 @@ class AssessmentController {
   static final addressController = TextEditingController();
   static final barangayController = TextEditingController();
 
-  // Section 3: Obesity & Blood Pressure
   static final heightController = TextEditingController();
   static final weightController = TextEditingController();
   static final bmiController = TextEditingController();
@@ -67,17 +60,14 @@ class AssessmentController {
   static final bpMedicineController = TextEditingController();
   static final medMilligramsController = TextEditingController();
 
-  // Section 5: Alcohol
   static final drinksAlcoholController = TextEditingController();
   static final excessiveAlcoholController = TextEditingController();
 
-  // Section 6: Lifestyle
   static final highFatSaltController = TextEditingController();
   static final vegController = TextEditingController();
   static final fruitController = TextEditingController();
   static final physicalActivityController = TextEditingController();
 
-  // Section 7: Questionnaire
   static Map<String, bool?> anginaQuestions = {
     'Q1. Nakakaramdam ka ba ng pananakit o kabigatan sa iyong dibdib? (If NO, skip to Question 8)':
         null,
@@ -97,17 +87,149 @@ class AssessmentController {
 
   static final anginaResultController = TextEditingController();
 
-  // Section 8: Diabetes
   static final diabetesScreeningController = TextEditingController();
   static final diabetesMedicationController = TextEditingController();
   static final diabetesExistingMedicationController = TextEditingController();
   static final diabetesMedMgController = TextEditingController();
 
-  static Map<String, dynamic> toJson() {
+  // static Map<String, dynamic> toJson() {
+  //   return {
+  //     "age": ageController.text,
+  //     "sex": sexController.text,
+  //     "bmi": bmiController.text,
+  //     "whr_ratio": ratioController.text,
+  //     "whr_category": ratioCategoryController.text,
+  //     "sbp": sbpAvgController.text,
+  //     "dbp": dbpAvgController.text,
+  //     "bp_category": bpCategoryController.text,
+  //     "smoking": radioAnswers["Smoking Status"],
+  //     "alcohol": (yesNoAnswers["Drinks Alcohol"] ?? false) ? "YES" : "NO",
+  //     "excessive_alcohol":
+  //         (yesNoAnswers["5 Drinks Occasion"] ?? false) ? "YES" : "NO",
+  //     "high_fat_salt":
+  //         (yesNoAnswers["Processed Foods"] ?? false) ? "YES" : "NO",
+  //     "vegetable_intake": (yesNoAnswers["Vegetables"] ?? false) ? "YES" : "NO",
+  //     "fruit_intake": (yesNoAnswers["Fruits"] ?? false) ? "YES" : "NO",
+  //     "physical_activity":
+  //         (yesNoAnswers["Physical Activity"] ?? false) ? "YES" : "NO",
+
+  //     "Q1": (yesNoAnswers["Q1"] ?? false) ? "YES" : "NO",
+  //     "Q2":
+  //         yesNoAnswers["Q2"] == null
+  //             ? null
+  //             : (yesNoAnswers["Q2"] ?? false)
+  //             ? "YES"
+  //             : "NO",
+  //     "Q3":
+  //         yesNoAnswers["Q3"] == null
+  //             ? null
+  //             : (yesNoAnswers["Q3"] ?? false)
+  //             ? "YES"
+  //             : "NO",
+  //     "Q4":
+  //         yesNoAnswers["Q4"] == null
+  //             ? null
+  //             : (yesNoAnswers["Q4"] ?? false)
+  //             ? "YES"
+  //             : "NO",
+  //     "Q5":
+  //         yesNoAnswers["Q5"] == null
+  //             ? null
+  //             : (yesNoAnswers["Q5"] ?? false)
+  //             ? "YES"
+  //             : "NO",
+  //     "Q6":
+  //         yesNoAnswers["Q6"] == null
+  //             ? null
+  //             : (yesNoAnswers["Q6"] ?? false)
+  //             ? "YES"
+  //             : "NO",
+  //     "Q7":
+  //         yesNoAnswers["Q7"] == null
+  //             ? null
+  //             : (yesNoAnswers["Q7"] ?? false)
+  //             ? "YES"
+  //             : "NO",
+  //     "Q8": (yesNoAnswers["Q8"] ?? false) ? "YES" : "NO",
+
+  //     "diabetes_diagnosed": radioAnswers["Diagnosed with Diabetes?"],
+  //     "polyuria": (yesNoAnswers["Polyuria"] ?? false) ? "YES" : "NO",
+  //     "polyphagia": (yesNoAnswers["Polyphagia"] ?? false) ? "YES" : "NO",
+  //     "polydipsia": (yesNoAnswers["Polydipsia"] ?? false) ? "YES" : "NO",
+  //   };
+  // }
+
+  // Future<Map<String, dynamic>> submitAssessment(
+  //   Map<String, dynamic> patientData,
+  // ) async {
+  //   try {
+  //     final response = await ApiClient.dio.post(
+  //       "/risk-assessment/",
+  //       data: patientData,
+  //     );
+  //     return response.data;
+  //   } catch (e) {
+  //     throw Exception("Error submitting assessment: $e");
+  //   }
+  // }
+
+  // Future<Map<String, dynamic>> fetchRiskAssessment(
+  //   Map<String, dynamic> patientData,
+  // ) async {
+  //   try {
+  //     final response = await ApiClient.dio.post(
+  //       "/risk-chart/get-risk/",
+  //       data: patientData,
+  //     );
+  //     return response.data;
+  //   } catch (e) {
+  //     throw Exception("Failed risk lookup: $e");
+  //   }
+  // }
+
+  static Future<Map<String, dynamic>> toSaveJson() async {
+    final box = await Hive.openBox("authBox");
+    final user = box.get("user");
+    final userId = (user is Map && user.containsKey('id')) ? user['id'] : user;
+    if (kDebugMode) {
+      print("User ID for assessment: $userId");
+    }
+
+    String sexValue = sexController.text;
+    if (sexValue == "M") sexValue = "Male";
+    if (sexValue == "F") sexValue = "Female";
+
     return {
-      "age": ageController.text,
-      "sex": sexController.text,
+      "user": userId,
+      "is_completed": true,
+      "is_archived": false,
+      "is_synced": false,
+
+      "patient_info": {
+        "name": nameController.text,
+        "birthdate": birthdateController.text,
+        "age": ageController.text,
+        "sex": sexValue,
+        "civil_status": civilStatusController.text,
+        "contact_num": contactController.text,
+        "address": addressController.text,
+        "barangay": barangayController.text,
+      },
+
+      "hypertension": (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "stroke": (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "heart_attack": (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "diabetes": (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "asthma": (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "cancer": (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "kidney_disease":
+          (yesNoAnswers["Taking Medicine"] ?? false) ? "YES" : "NO",
+      "height": heightController.text,
+      "weight": weightController.text,
       "bmi": bmiController.text,
+      "bmi_category": bmiCategoryController.text,
+      "waist_circumference": waistController.text,
+      "hip_circumference": hipController.text,
       "whr_ratio": ratioController.text,
       "whr_category": ratioCategoryController.text,
       "sbp": sbpAvgController.text,
@@ -124,7 +246,6 @@ class AssessmentController {
       "physical_activity":
           (yesNoAnswers["Physical Activity"] ?? false) ? "YES" : "NO",
 
-      // Only Q1–Q8
       "Q1": (yesNoAnswers["Q1"] ?? false) ? "YES" : "NO",
       "Q2":
           yesNoAnswers["Q2"] == null
@@ -165,41 +286,32 @@ class AssessmentController {
       "Q8": (yesNoAnswers["Q8"] ?? false) ? "YES" : "NO",
 
       "diabetes_diagnosed": radioAnswers["Diagnosed with Diabetes?"],
+      "with_without_medication": diabetesMedicationController.text,
+      "existing_diabetes_medicines": diabetesExistingMedicationController.text,
+      "diabetes_med_milligrams":
+          diabetesMedMgController.text.isEmpty
+              ? null
+              : int.tryParse(diabetesMedMgController.text),
       "polyuria": (yesNoAnswers["Polyuria"] ?? false) ? "YES" : "NO",
       "polyphagia": (yesNoAnswers["Polyphagia"] ?? false) ? "YES" : "NO",
       "polydipsia": (yesNoAnswers["Polydipsia"] ?? false) ? "YES" : "NO",
     };
   }
 
-  Future<Map<String, dynamic>> submitAssessment(
-    Map<String, dynamic> patientData,
+  Future<Map<String, dynamic>> createAssessment(
+    Map<String, dynamic> assessmentData,
   ) async {
     try {
       final response = await ApiClient.dio.post(
-        "/risk-assessment/",
-        data: patientData,
+        "/assessments/create/",
+        data: assessmentData,
       );
       return response.data;
     } catch (e) {
-      throw Exception("Error submitting assessment: $e");
+      throw Exception("Error creating assessment: $e");
     }
   }
 
-  Future<Map<String, dynamic>> fetchRiskAssessment(
-    Map<String, dynamic> patientData,
-  ) async {
-    try {
-      final response = await ApiClient.dio.post(
-        "/risk-chart/get-risk/",
-        data: patientData,
-      );
-      return response.data;
-    } catch (e) {
-      throw Exception("Failed risk lookup: $e");
-    }
-  }
-
-  // =================== CALCULATION LOGIC ===================
   void calculateAgeFromBirthdate(DateTime birthdate) {
     final today = DateTime.now();
     int age = today.year - birthdate.year;

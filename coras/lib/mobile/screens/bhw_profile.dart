@@ -21,7 +21,6 @@ class BhwProfile extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Avatar
           Center(
             child: CircleAvatar(
               radius: 50,
@@ -34,7 +33,6 @@ class BhwProfile extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Full Name
           Center(
             child: Text(
               "${user["first_name"] ?? ""} ${user["middle_name"] ?? ""} ${user["last_name"] ?? ""} ${user["suffix"] ?? ""}",
@@ -44,7 +42,6 @@ class BhwProfile extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // Role
           Center(
             child: Text(
               (user["groups"] as List).join(", "),
@@ -53,7 +50,6 @@ class BhwProfile extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // Info
           _buildInfoTile("Email", user["email"]),
           _buildInfoTile("Phone", user["phone_number"]),
           _buildInfoTile("Sex", user["sex"]),

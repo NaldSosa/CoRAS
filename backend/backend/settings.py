@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'accounts',
     'user_management',
     'assessments',
+    'patients',
 ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

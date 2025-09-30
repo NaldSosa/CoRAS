@@ -10,8 +10,8 @@ from .utils import (
 def get_risk_assessment(request):
     data = request.data
 
-    # 🔍 Debug: raw data na galing sa Flutter/Postman
-    print("📥 RAW request.data:", data)
+    # For debugging
+    print("RAW request.data:", data)
 
     try:
         sex = data.get("sex")
@@ -20,17 +20,17 @@ def get_risk_assessment(request):
         sbp = int(data.get("sbp"))
         raw_smoker_status = data.get("smoker_status") or data.get("smoking")
     except Exception as e:
-        print("⚠️ Error parsing inputs:", e)
+        print("Error parsing inputs:", e)
         return Response({"error": f"Invalid input: {e}"}, status=400)
 
-    # 🔹 convert raw inputs → categories
+    # convert raw inputs to categories
     sex = categorize_sex(sex)
     age_group = categorize_age(age)
     bmi_group = categorize_bmi(bmi)
     sbp_group = categorize_sbp(sbp)
     smoker_status = categorize_smoker_status(raw_smoker_status)
 
-    # 🔍 Debug: categorized values
+    # for debugging
     print("🔎 Categorized values:", {
         "sex": sex,
         "age_group": age_group,
@@ -42,12 +42,12 @@ def get_risk_assessment(request):
     risk = RiskChart.lookup(sex, age_group, smoker_status, bmi_group, sbp_group)
 
     if risk:
-        print("✅ RiskChart match found:", risk.risk_percentage, risk.risk_level.risk_label)
+        print("RiskChart match found:", risk.risk_percentage, risk.risk_level.risk_label)
         return Response({
             "risk_percentage": risk.risk_percentage,
             "risk_level": risk.risk_level.risk_label,
             "risk_color": risk.risk_level.risk_color,
         })
     else:
-        print("❌ No RiskChart match found for categories above")
+        print("No RiskChart match found for categories above")
         return Response({"error": "No matching risk found"}, status=404)

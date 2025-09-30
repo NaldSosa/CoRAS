@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'bhw_login.dart'; // make sure this import is correct
+import 'bhw_login.dart';
 
 class BhwSplash extends StatefulWidget {
   const BhwSplash({super.key});

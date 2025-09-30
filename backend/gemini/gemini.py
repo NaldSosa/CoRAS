@@ -15,7 +15,7 @@ def analyze_patient(results: dict) -> dict:
 
     model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
-    # 🔎 Debugging: print raw results Gemini will read
+    # For debugging
     print("=== Patient Data Sent to Gemini ===")
     print(json.dumps(results, indent=2))
     print("===================================")

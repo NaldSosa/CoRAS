@@ -6,7 +6,7 @@ class MhoSidebar extends StatelessWidget {
   final bool isCollapsed;
   final Function() onToggle;
   final String activeMenu;
-  final Function(Widget, String) onMenuSelected; // 👈 important!
+  final Function(Widget, String) onMenuSelected;
 
   const MhoSidebar({
     super.key,
@@ -23,7 +23,7 @@ class MhoSidebar extends StatelessWidget {
   }) {
     final isActive = activeMenu == title;
     return InkWell(
-      onTap: () => onMenuSelected(page, title), // 👈 pass widget + title
+      onTap: () => onMenuSelected(page, title),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -61,7 +61,6 @@ class MhoSidebar extends StatelessWidget {
       color: const Color(0xFF2E7D32),
       child: Column(
         children: [
-          // Logo + toggle
           Container(
             padding: const EdgeInsets.all(12),
             child: Row(

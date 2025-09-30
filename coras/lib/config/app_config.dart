@@ -27,7 +27,6 @@ class AuthInterceptor extends Interceptor {
     final authBox = Hive.box("authBox");
     final accessToken = authBox.get("accessToken");
 
-    // 🚫 Skip Authorization for login and refresh endpoints
     final skipAuth =
         options.path.contains("mobile-login") ||
         options.path.contains("refresh");
@@ -37,8 +36,8 @@ class AuthInterceptor extends Interceptor {
     }
 
     if (kDebugMode) {
-      print("➡️ Request path: ${options.path}");
-      print("➡️ Final headers: ${options.headers}");
+      print("Request path: ${options.path}");
+      print("Final headers: ${options.headers}");
     }
 
     return handler.next(options);
@@ -68,15 +67,12 @@ class AuthInterceptor extends Interceptor {
             final cloneResponse = await dio.fetch(retryReq);
             return handler.resolve(cloneResponse);
           } else {
-            // ❌ Refresh failed → logout
             await _logoutUser(authBox);
           }
         } catch (e) {
-          // ❌ Refresh request error → logout
           await _logoutUser(authBox);
         }
       } else {
-        // ❌ No refresh token → logout
         await _logoutUser(authBox);
       }
     }

@@ -54,7 +54,7 @@ class WebLoginView(APIView):
         if not (user.is_superuser or user.groups.filter(name="Admin").exists() or user.groups.filter(name="Municipal Health Worker").exists()):
             return Response({"detail": "Access denied"}, status=status.HTTP_403_FORBIDDEN)
 
-        login(request, user)  # Django session created
+        login(request, user) 
 
         return Response({
             "message": "Login successful",

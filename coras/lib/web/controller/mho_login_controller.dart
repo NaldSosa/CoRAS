@@ -2,7 +2,6 @@ import 'package:coras/config/app_config.dart';
 import 'package:hive/hive.dart';
 
 class MhoLoginController {
-  /// ✅ Online login
   Future<Map<String, dynamic>> login(String username, String password) async {
     try {
       final response = await ApiClient.dio.post(

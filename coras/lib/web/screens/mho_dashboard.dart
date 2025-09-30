@@ -19,7 +19,6 @@ class _MhoDashboardState extends State<MhoDashboard> {
     return Scaffold(
       body: Row(
         children: [
-          /// Sidebar
           MhoSidebar(
             isCollapsed: isCollapsed,
             activeMenu: activeMenu,
@@ -28,8 +27,8 @@ class _MhoDashboardState extends State<MhoDashboard> {
             },
             onMenuSelected: (page, menu) {
               setState(() {
-                activePage = page; // 👈 Sidebar gives the page
-                activeMenu = menu; // 👈 Sidebar gives the title
+                activePage = page;
+                activeMenu = menu;
               });
             },
           ),
@@ -40,10 +39,7 @@ class _MhoDashboardState extends State<MhoDashboard> {
               children: [
                 _buildHeader(),
                 Expanded(
-                  child: Container(
-                    color: Colors.grey[100],
-                    child: activePage, // 👈 always display current page
-                  ),
+                  child: Container(color: Colors.grey[100], child: activePage),
                 ),
               ],
             ),

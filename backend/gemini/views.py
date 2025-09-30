@@ -11,10 +11,10 @@ def risk_assessment_view(request):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        # Step 1: run your manual rules
+        # run your manual rules
         results = run_risk_assessment(data)
 
-        # Step 2: call Gemini ONCE
+        # call Gemini ONCE
         gemini_output = analyze_patient(results)
 
         return JsonResponse({

@@ -5,7 +5,7 @@ class RadioGroupField extends StatelessWidget {
   final List<String> options;
   final String? value;
   final Function(String?) onChanged;
-  final String? Function(String?)? validator; // ✅ validator added
+  final String? Function(String?)? validator;
 
   const RadioGroupField({
     super.key,
@@ -13,7 +13,7 @@ class RadioGroupField extends StatelessWidget {
     required this.options,
     required this.value,
     required this.onChanged,
-    this.validator, // ✅ optional validator
+    this.validator,
   });
 
   @override
@@ -44,9 +44,7 @@ class RadioGroupField extends StatelessWidget {
                         activeColor: const Color(0xFF2E7D32),
                         onChanged: (val) {
                           onChanged(val);
-                          fieldState.didChange(
-                            val,
-                          ); // ✅ keep form state in sync
+                          fieldState.didChange(val);
                         },
                         title: Text(
                           opt,
