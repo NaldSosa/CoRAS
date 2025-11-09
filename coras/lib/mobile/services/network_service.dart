@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:coras/config/app_config.dart';
+import 'package:coras/api_client.dart';
 
 class NetworkService {
   final Connectivity _connectivity = Connectivity();

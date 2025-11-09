@@ -1,5 +1,5 @@
+import 'package:coras/api_client.dart';
 import 'package:dio/dio.dart';
-import 'app_config.dart';
 
 class ApiClientWeb {
   static String? _accessToken;
@@ -16,16 +16,35 @@ class ApiClientWeb {
     }
     return response;
   }
+}
 
-  static Future<Response> getUsers() => ApiClient.dio.get("users/");
-  static Future<Response> createUser(Map<String, dynamic> data) =>
-      ApiClient.dio.post("users/", data: data);
-  static Future<Response> updateUser(int id, Map<String, dynamic> data) =>
-      ApiClient.dio.put("users/$id/", data: data);
-  static Future<Response> getLocationOptions(String role) => ApiClient.dio.get(
-    "users/location_options/",
-    queryParameters: {"role": role},
-  );
+class AppConfigWeb {
+  static void setAuthToken(String token) {
+    ApiClient.dio.options.headers['Authorization'] = 'Bearer $token';
+  }
+
+  static void clearAuthToken() {
+    ApiClient.dio.options.headers.remove('Authorization');
+  }
+
+  static Future<Response> get(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    return await ApiClient.dio.get(path, queryParameters: queryParameters);
+  }
+
+  static Future<Response> post(String path, {dynamic data}) async {
+    return await ApiClient.dio.post(path, data: data);
+  }
+
+  static Future<Response> put(String path, {dynamic data}) async {
+    return await ApiClient.dio.put(path, data: data);
+  }
+
+  static Future<Response> delete(String path, {dynamic data}) async {
+    return await ApiClient.dio.delete(path, data: data);
+  }
 }
 
 class AuthInterceptorWeb extends Interceptor {

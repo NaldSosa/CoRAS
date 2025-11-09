@@ -1,3 +1,4 @@
+import 'package:coras/web/screens/mho_threshold_.dart';
 import 'package:coras/web/screens/mho_user_management.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +8,7 @@ class MhoSidebar extends StatelessWidget {
   final Function() onToggle;
   final String activeMenu;
   final Function(Widget, String) onMenuSelected;
+  final String userRole;
 
   const MhoSidebar({
     super.key,
@@ -14,6 +16,7 @@ class MhoSidebar extends StatelessWidget {
     required this.onToggle,
     required this.activeMenu,
     required this.onMenuSelected,
+    this.userRole = '',
   });
 
   Widget buildMenuItem({
@@ -128,31 +131,33 @@ class MhoSidebar extends StatelessWidget {
           buildMenuItem(
             icon: Icons.table_chart,
             title: "Threshold",
-            page: const Center(child: Text("Threshold Page")),
+            page: const ThresholdScreen(),
           ),
 
-          const SizedBox(height: 20),
-          if (!isCollapsed) _buildSectionLabel("Administration"),
-          buildMenuItem(
-            icon: Icons.people,
-            title: "User Management",
-            page: const UserManagement(),
-          ),
-          buildMenuItem(
-            icon: Icons.settings,
-            title: "System Configuration",
-            page: const Center(child: Text("System Configuration Page")),
-          ),
-          buildMenuItem(
-            icon: Icons.archive,
-            title: "Archive Records",
-            page: const Center(child: Text("Archive Records Page")),
-          ),
-          buildMenuItem(
-            icon: Icons.history,
-            title: "Audit Logs",
-            page: const Center(child: Text("Audit Logs Page")),
-          ),
+          if (userRole.toLowerCase().trim() == 'admin') ...[
+            const Divider(color: Colors.white54),
+            if (!isCollapsed) _buildSectionLabel("Administration"),
+            buildMenuItem(
+              icon: Icons.people,
+              title: "User Management",
+              page: const UserManagement(),
+            ),
+            buildMenuItem(
+              icon: Icons.settings,
+              title: "System Configuration",
+              page: const Center(child: Text("System Configuration Page")),
+            ),
+            buildMenuItem(
+              icon: Icons.archive,
+              title: "Archive Records",
+              page: const Center(child: Text("Archive Records Page")),
+            ),
+            buildMenuItem(
+              icon: Icons.history,
+              title: "Audit Logs",
+              page: const Center(child: Text("Audit Logs Page")),
+            ),
+          ],
         ],
       ),
     );

@@ -1,4 +1,4 @@
-import 'package:coras/config/app_config.dart';
+import 'package:coras/api_client.dart';
 
 class BhwViewEncodedAssessmentController {
   Future<List<dynamic>> fetchPatients() async {

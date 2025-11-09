@@ -1,4 +1,4 @@
-import 'package:coras/config/app_config.dart';
+import 'package:coras/api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';

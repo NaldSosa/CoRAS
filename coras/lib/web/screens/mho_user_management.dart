@@ -1,3 +1,4 @@
+import 'package:coras/web/config/app_config_web.dart';
 import 'package:coras/web/screens/modal/user_form.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,24 +11,71 @@ class UserManagement extends StatefulWidget {
 }
 
 class _UserManagementState extends State<UserManagement> {
-  final List<Map<String, String>> _users = [
-    {
-      "name": "Juan Dela Cruz",
-      "email": "juan.delacruz@health.gov.ph",
-      "role": "BHW",
-      "location": "San Jose",
-      "status": "Active",
-    },
-    {
-      "name": "Anna Reyes",
-      "email": "anna.reyes@health.gov.ph",
-      "role": "MHO",
-      "location": "Poblacion 1",
-      "status": "Inactive",
-    },
-  ];
+  bool isLoading = false;
+  List<Map<String, dynamic>> users = [];
+
+  int totalUsers = 0;
+  int activeUsers = 0;
+  int inactiveUsers = 0;
 
   int currentPage = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+  }
+
+  /// 🔹 Fetch users from backend and compute stats
+  Future<void> _loadUsers() async {
+    setState(() => isLoading = true);
+    try {
+      final response = await AppConfigWeb.get('/api/users/');
+      if (response.statusCode == 200) {
+        final fetched = List<Map<String, dynamic>>.from(response.data);
+
+        // compute stats
+        final total = fetched.length;
+        final active =
+            fetched.where((u) => (u['status'] ?? true) == true).length;
+        final inactive = total - active;
+
+        setState(() {
+          users = fetched;
+          totalUsers = total;
+          activeUsers = active;
+          inactiveUsers = inactive;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading users: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to load users.')));
+      }
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
+  /// 🔹 Open Add/Edit user form
+  Future<void> _openUserForm({Map<String, dynamic>? user}) async {
+    final result = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (_) => Dialog(
+            insetPadding: const EdgeInsets.all(32),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: SizedBox(width: 700, child: UserForm(user: user)),
+          ),
+    );
+
+    if (result == true) _loadUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +97,7 @@ class _UserManagementState extends State<UserManagement> {
             ),
             tabs: const [Tab(text: "Users"), Tab(text: "User Permissions")],
           ),
-
           const SizedBox(height: 12),
-
           Expanded(
             child: TabBarView(
               children: [
@@ -60,23 +106,23 @@ class _UserManagementState extends State<UserManagement> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 📊 Stat Cards
+                      /// 📊 Stat Cards — now dynamic
                       Row(
                         children: [
                           _buildStatCard(
-                            "27",
+                            "$totalUsers",
                             "Total Users",
                             Colors.blue,
                             Icons.people,
                           ),
                           _buildStatCard(
-                            "23",
+                            "$activeUsers",
                             "Active Users",
                             Colors.green,
                             Icons.person,
                           ),
                           _buildStatCard(
-                            "4",
+                            "$inactiveUsers",
                             "Inactive Users",
                             Colors.red,
                             Icons.person_off,
@@ -86,6 +132,7 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 16),
 
+                      /// 🔍 Filters
                       Row(
                         children: [
                           Expanded(
@@ -101,7 +148,6 @@ class _UserManagementState extends State<UserManagement> {
                                     size: 18,
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 0,
                                     horizontal: 12,
                                   ),
                                   border: OutlineInputBorder(
@@ -114,11 +160,10 @@ class _UserManagementState extends State<UserManagement> {
                           const SizedBox(width: 12),
                           _buildDropdown("Sort by", ["Name", "Role"]),
                           const SizedBox(width: 12),
-                          _buildDropdown("Role", ["Admin", "BHW", "MHO"]),
+                          _buildDropdown("Role", ["Admin", "BHW", "MHW"]),
                           const SizedBox(width: 12),
                           _buildDropdown("Barangays", [
                             "Poblacion 1",
-                            "Poblacion 5",
                             "San Jose",
                           ]),
                           const SizedBox(width: 12),
@@ -128,6 +173,7 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 12),
 
+                      /// ➕ Add User Button
                       Align(
                         alignment: Alignment.centerRight,
                         child: ElevatedButton.icon(
@@ -146,13 +192,7 @@ class _UserManagementState extends State<UserManagement> {
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
-                          onPressed: () {
-                            UserFormModal.show(
-                              context,
-                              title: "Add User",
-                              actionLabel: "Save",
-                            );
-                          },
+                          onPressed: () => _openUserForm(),
                           icon: const Icon(Icons.add, size: 18),
                           label: const Text("Add User"),
                         ),
@@ -160,60 +200,7 @@ class _UserManagementState extends State<UserManagement> {
 
                       const SizedBox(height: 16),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed:
-                                currentPage > 1
-                                    ? () {
-                                      setState(() {
-                                        currentPage--;
-                                      });
-                                    }
-                                    : null,
-                            child: const Text("Prev"),
-                          ),
-                          for (int i = 1; i <= 5; i++)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  backgroundColor:
-                                      i == currentPage
-                                          ? Colors.green.shade100
-                                          : null,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    currentPage = i;
-                                  });
-                                },
-                                child: Text(
-                                  "$i",
-                                  style: GoogleFonts.poppins(fontSize: 13),
-                                ),
-                              ),
-                            ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                currentPage++;
-                              });
-                            },
-                            child: const Text("Next"),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 12),
-
+                      /// 📋 User Table
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
@@ -235,7 +222,7 @@ class _UserManagementState extends State<UserManagement> {
                                 child: Row(
                                   children: const [
                                     _TableHeader("User", flex: 2),
-                                    _TableHeader("Email", flex: 3),
+                                    _TableHeader("Email", flex: 2),
                                     _TableHeader("Role"),
                                     _TableHeader("Location"),
                                     _TableHeader("Status"),
@@ -244,73 +231,97 @@ class _UserManagementState extends State<UserManagement> {
                                 ),
                               ),
 
+                              /// Table Rows
                               Expanded(
-                                child: ListView.separated(
-                                  itemCount: _users.length,
-                                  separatorBuilder:
-                                      (_, __) => Divider(
-                                        color: Colors.grey.shade300,
-                                        height: 1,
-                                      ),
-                                  itemBuilder: (context, index) {
-                                    final user = _users[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 10,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 2,
-                                            child: Text(
-                                              user["name"]!,
-                                              style: _rowStyle(),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 3,
-                                            child: Text(
-                                              user["email"]!,
-                                              style: _rowStyle(),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              user["role"]!,
-                                              style: _rowStyle(),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              user["location"]!,
-                                              style: _rowStyle(),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: _statusPill(user["status"]!),
-                                          ),
-                                          Expanded(
-                                            child: IconButton(
-                                              onPressed: () {
-                                                UserFormModal.show(
-                                                  context,
-                                                  title: "Edit User",
-                                                  actionLabel: "Update",
-                                                );
-                                              },
-                                              icon: const Icon(
-                                                Icons.edit,
-                                                size: 18,
-                                                color: Colors.black54,
+                                child:
+                                    isLoading
+                                        ? const Center(
+                                          child: CircularProgressIndicator(),
+                                        )
+                                        : users.isEmpty
+                                        ? const Center(
+                                          child: Text("No users found."),
+                                        )
+                                        : ListView.separated(
+                                          itemCount: users.length,
+                                          separatorBuilder:
+                                              (_, __) => Divider(
+                                                color: Colors.grey.shade300,
+                                                height: 1,
                                               ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
+                                          itemBuilder: (context, index) {
+                                            final u = users[index];
+                                            final fullName =
+                                                '${u['first_name'] ?? ''} ${u['middle_name'] ?? ''} ${u['last_name'] ?? ''}'
+                                                    .trim();
+                                            final role = u['role'] ?? 'N/A';
+                                            final email = u['email'] ?? '';
+                                            final loc =
+                                                u['barangay']?['barangay_name'] ??
+                                                u['rhu']?['rhu_name'] ??
+                                                '-';
+                                            final active =
+                                                (u['status'] ?? true) == true;
+
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 10,
+                                                  ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      fullName,
+                                                      style: _rowStyle(),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      email,
+                                                      style: _rowStyle(),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      role,
+                                                      style: _rowStyle(),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      loc,
+                                                      style: _rowStyle(),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: _statusPill(
+                                                      active
+                                                          ? "Active"
+                                                          : "Inactive",
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: IconButton(
+                                                      onPressed:
+                                                          () => _openUserForm(
+                                                            user: u,
+                                                          ),
+                                                      icon: const Icon(
+                                                        Icons.edit,
+                                                        size: 18,
+                                                        color: Colors.black54,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
                               ),
                             ],
                           ),
@@ -319,7 +330,6 @@ class _UserManagementState extends State<UserManagement> {
                     ],
                   ),
                 ),
-
                 const Center(child: Text("Manage User Permissions")),
               ],
             ),
@@ -328,6 +338,8 @@ class _UserManagementState extends State<UserManagement> {
       ),
     );
   }
+
+  // === UI HELPERS ===
 
   TextStyle _rowStyle() =>
       GoogleFonts.poppins(fontSize: 13, color: Colors.black87);
@@ -416,10 +428,7 @@ class _UserManagementState extends State<UserManagement> {
       child: DropdownButtonFormField<String>(
         hint: Text(hint, style: GoogleFonts.poppins(fontSize: 13)),
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 0,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
         ),
         items:

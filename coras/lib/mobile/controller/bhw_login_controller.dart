@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:coras/api_client.dart';
 import 'package:crypto/crypto.dart';
-import 'package:coras/config/app_config.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 

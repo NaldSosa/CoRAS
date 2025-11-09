@@ -1,24 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:coras/api_client.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 
-class AppConfig {
-  static String get baseUrl => dotenv.env['API_URL'] ?? "";
-}
-
-class ApiClient {
-  static final Dio dio = Dio(
-    BaseOptions(
-      baseUrl: AppConfig.baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      headers: {"Content-Type": "application/json"},
-    ),
-  )..interceptors.add(AuthInterceptor());
-}
-
-class AuthInterceptor extends Interceptor {
+class AuthInterceptorMobile extends Interceptor {
   @override
   void onRequest(
     RequestOptions options,
